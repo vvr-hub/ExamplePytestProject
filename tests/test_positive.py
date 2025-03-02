@@ -1,6 +1,6 @@
 import pytest
 from utils.api_client import APIClient
-from config.config_loader import ConfigLoader
+
 
 @pytest.fixture
 def api_client():
@@ -35,7 +35,7 @@ def test_get_users_page_2_response_verification(api_client):
         assert isinstance(data, list)
         assert len(data) == 6
 
-        # Verify specific user data (e.g., the first user)
+        # Verify specific user data (for example, the first user)
         first_user = data[0]
         assert first_user["id"] == 7
         assert first_user["email"] == "michael.lawson@reqres.in"
@@ -55,10 +55,12 @@ def test_get_users_page_2_response_verification(api_client):
 def test_create_and_delete_user(api_client):
     data = {"name": "John Doe", "job": "QA Engineer"}
 
+    # Create user
     create_response = api_client.post("/users", data)
     assert create_response.status_code == 201
     user_id = create_response.json()["id"]
 
+    # Delete user
     delete_response = api_client.delete(f"/users/{user_id}")
     assert delete_response.status_code == 204
 

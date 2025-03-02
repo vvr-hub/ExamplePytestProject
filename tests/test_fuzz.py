@@ -5,13 +5,15 @@ import random
 import string
 import re
 
-# Initialize ConfigLoader to fetch base_url from config.yaml
+# Initialise ConfigLoader to fetch the base URL(s) from config.yaml dynamically
 config_loader = ConfigLoader()
-BASE_URL = config_loader.get('base_url')  # Fetch base_url dynamically from config
+BASE_URL = config_loader.get('base_url')
+
 
 def random_string(length=10):
     """Generates a random alphanumeric string."""
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
 
 def random_email(length=8):
     """Generates a random email address."""
@@ -19,9 +21,11 @@ def random_email(length=8):
     domain = random_string(5) + ".com"
     return f"{username}@{domain}"
 
+
 def random_int_string(length=5):
     """Generates a random string of numbers."""
     return ''.join(random.choices(string.digits, k=length))
+
 
 @pytest.fixture
 def api_client():
@@ -29,23 +33,24 @@ def api_client():
     session = requests.Session()
     return session
 
+
 @pytest.mark.parametrize("email,password", [
     ("", ""),  # Empty values - Handled
-    (random_email(), ""), # valid email, empty password - Handled.
+    (random_email(), ""),  # valid email, empty password - Handled.
 
-    # The below are valid fuzz inputs, but the API does not handle them robustly.
+    # THE BELOW ARE VALID FUZZ INPUTS, BUT THE API DOES NOT HANDLE THEM ROBUSTLY.
     # They return a generic "user not found" error.
 
-    #("test@domain", "1234"),  # Missing TLD - Not robustly handled
-    #("admin'--@example.com", "password"),  # SQL Injection attempt - Not robustly handled
-    #("<script>alert('xss')</script>", "password123"),  # XSS attack - Not robustly handled
-    #(random_string(1000), random_string(1000)),  # Extremely long input - Not robustly handled
+    # ("test@domain", "1234"),  # Missing TLD - Not robustly handled
+    # ("admin'--@example.com", "password"),  # SQL Injection attempt - Not robustly handled
+    # ("<script>alert('xss')</script>", "password123"),  # XSS attack - Not robustly handled
+    # (random_string(1000), random_string(1000)),  # Extremely long input - Not robustly handled
     # (random_email(), random_string()), # valid email, random password - Not robustly handled
     # (random_string(), random_int_string()), # random username, numeric password - Not robustly handled
     # (random_string(), random_string(10000)), # random username, extremely long password - Not robustly handled
     # (random_int_string(), random_string()), # numeric username, random password - Not robustly handled
     # (random_string(10000), random_string()), # extremely long username, random password - Not robustly handled
-    #("", random_string()), # empty email, random password - Not robustly handled
+    # ("", random_string()), # empty email, random password - Not robustly handled
     # (random_string(), " "), # random email, space password - Not robustly handled
     # (" ", random_string()), # space email, random password - Not robustly handled
     # ("test@example.com", "\n"), # valid email, newline password - Not robustly handled
@@ -72,4 +77,5 @@ def test_fuzz_login(api_client, email, password):
     response_json = response.json()
     assert "error" in response_json or "errors" in response_json
     if response.status_code == 400:
-        assert re.search(r"invalid|missing|format|length|user not found", str(response_json).lower()) # check for error keywords.
+        assert re.search(r"invalid|missing|format|length|user not found",
+                         str(response_json).lower())  # check for error keywords.

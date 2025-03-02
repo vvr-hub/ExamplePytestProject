@@ -33,10 +33,3 @@ class ConfigLoader:
     def get(self, key):
         # Retrieve a value from the loaded config
         return self.config.get(key)
-
-# Example usage:
-# config_loader = ConfigLoader()
-# base_url = config_loader.get('base_url')
-# wiremock_url = config_loader.get('wiremock_url')
-# user_url = config_loader.get('user_url')
-# auth_token = config_loader.get('auth_token')

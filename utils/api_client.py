@@ -1,10 +1,11 @@
 import requests
 from config.config_loader import ConfigLoader
 
+
 class APIClient:
     def __init__(self):
-        # Initialize the config loader and retrieve configuration values
-        config_loader = ConfigLoader()  # Initialize ConfigLoader instance
+        # Initialise the config loader and retrieve configuration values
+        config_loader = ConfigLoader()  # Initialise ConfigLoader instance
         self.base_url = config_loader.get('base_url')  # Fetch base_url from config
         self.auth_token = config_loader.get('auth_token')  # Fetch auth_token from config
         self.headers = {"Authorization": f"Bearer {self.auth_token}"}  # Set authorization headers

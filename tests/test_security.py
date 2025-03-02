@@ -2,10 +2,11 @@ import pytest
 import requests
 from config.config_loader import ConfigLoader
 
-# Initialize ConfigLoader to fetch base_url from config.yaml
+# Initialise ConfigLoader to fetch the base URL(s) from config.yaml dynamically
 config_loader = ConfigLoader()
-BASE_URL = config_loader.get('base_url')  # Fetch base_url dynamically from config
+BASE_URL = config_loader.get('base_url')
 WIREMOCK_URL = config_loader.get('wiremock_url')
+
 
 def test_sql_injection():
     """Attempt SQL Injection attack."""
@@ -46,7 +47,7 @@ def test_brute_force_protection():
     """Attempt brute-force attack."""
     payload = {"email": "eve.holt@reqres.in", "password": "wrongpassword"}
 
-    response = None  # Initialize response to avoid 'referenced before assignment' error
+    response = None  # Initialise response to avoid 'referenced before assignment' error
 
     for _ in range(10):  # Simulating multiple login attempts
         response = requests.post(f"{BASE_URL}/login", json=payload)

@@ -2,9 +2,9 @@ from config.config_loader import ConfigLoader
 import pytest
 import requests
 
-# Initialize ConfigLoader to fetch base_url from config.yaml
+# Initialise ConfigLoader to fetch the base URL(s) from config.yaml dynamically
 config_loader = ConfigLoader()
-BASE_URL = config_loader.get('base_url')  # Fetch base_url dynamically from config
+BASE_URL = config_loader.get('base_url')
 WIREMOCK_URL = config_loader.get('wiremock_url')
 
 
@@ -78,4 +78,3 @@ def test_mock_access_protected_route_no_token():
     response = requests.get(f"{WIREMOCK_URL}/admin/dashboard")  # No auth header
     assert response.status_code == 401
     assert "error" in response.json()
-

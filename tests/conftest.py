@@ -5,7 +5,7 @@ import pytest
 import time
 import os
 
-# Initialize ConfigLoader to fetch base_url from config.yaml
+# Initialise ConfigLoader to fetch base_url from config.yaml dynamically
 config_loader = ConfigLoader()
 WIREMOCK_URL = config_loader.get('wiremock_url')
 
@@ -35,8 +35,8 @@ def setup_wiremock():
     if not is_wiremock_running():
         print("WireMock is not running. Starting WireMock in Docker...")
         try:
-            project_root = os.getcwd() # get current working directory.
-            wiremock_volume_path = os.path.join(project_root, "wiremock") # construct path to wiremock folder.
+            project_root = os.getcwd()  # get current working directory.
+            wiremock_volume_path = os.path.join(project_root, "wiremock")  # construct path to wiremock folder.
             subprocess.run(
                 [
                     "docker", "run", "-d", "--rm", "--name", "wiremock",

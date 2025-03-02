@@ -1,5 +1,4 @@
 import pytest
-import requests
 import jsonschema
 import copy
 from utils.api_client import APIClient
@@ -198,4 +197,3 @@ def test_get_user_contract_invalid_email():
     }
     with pytest.raises(ValidationError):
         DefaultDraft7Validator(user_schema, format_checker=format_checker).validate(invalid_email_json)
-
