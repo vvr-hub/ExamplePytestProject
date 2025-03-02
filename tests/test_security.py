@@ -1,8 +1,10 @@
 import pytest
 import requests
+from config.config_loader import ConfigLoader
 
-BASE_URL = "https://reqres.in/api"
-
+# Initialize ConfigLoader to fetch base_url from config.yaml
+config_loader = ConfigLoader()
+BASE_URL = config_loader.get('base_url')  # Fetch base_url dynamically from config
 
 def test_sql_injection():
     """Attempt SQL Injection attack."""
@@ -57,4 +59,3 @@ def test_rate_limiting():
     headers = {"Authorization": "Bearer test_token"}
     responses = [requests.get(f"{BASE_URL}/users", headers=headers).status_code for _ in range(20)]
     assert any(code == 429 for code in responses), "API might not have rate limiting!"
-

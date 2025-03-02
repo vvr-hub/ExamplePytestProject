@@ -2,10 +2,15 @@ import pytest
 import requests
 import jsonschema
 import copy
+from utils.api_client import APIClient
 from jsonschema import ValidationError, Draft7Validator
 from uritemplate.template import URITemplate
 
-BASE_URL = "https://reqres.in/api"
+
+@pytest.fixture
+def api_client():
+    return APIClient()
+
 
 # Custom format checker for strict URI validation
 format_checker = jsonschema.FormatChecker()
@@ -130,9 +135,9 @@ Draft7Validator.check_schema(list_resources_schema)
 
 
 @pytest.mark.parametrize("user_id", [2, 3, 4])
-def test_get_user_contract(user_id):
+def test_get_user_contract(api_client, user_id):
     """Ensure response follows expected schema."""
-    response = requests.get(f"{BASE_URL}/users/{user_id}")
+    response = api_client.get(f"/users/{user_id}")
     assert response.status_code == 200
     try:
         DefaultDraft7Validator(user_schema, format_checker=format_checker).validate(response.json())
@@ -140,9 +145,9 @@ def test_get_user_contract(user_id):
         pytest.fail(f"Schema validation failed for user {user_id}: {e.message}")
 
 
-def test_list_users_contract():
+def test_list_users_contract(api_client):
     """Ensure response follows expected schema for list of users."""
-    response = requests.get(f"{BASE_URL}/users")
+    response = api_client.get(f"/users")
     assert response.status_code == 200
     try:
         DefaultDraft7Validator(list_users_schema, format_checker=format_checker).validate(response.json())
@@ -150,9 +155,9 @@ def test_list_users_contract():
         pytest.fail(f"Schema validation failed: {e.message}")
 
 
-def test_single_resource_contract():
+def test_single_resource_contract(api_client):
     """Ensure response follows expected schema for a single resource."""
-    response = requests.get(f"{BASE_URL}/unknown/2")
+    response = api_client.get(f"/unknown/2")
     assert response.status_code == 200
     try:
         DefaultDraft7Validator(resource_schema, format_checker=format_checker).validate(response.json())
@@ -160,9 +165,9 @@ def test_single_resource_contract():
         pytest.fail(f"Schema validation failed: {e.message}")
 
 
-def test_list_resources_contract():
+def test_list_resources_contract(api_client):
     """Ensure response follows expected schema for list of resources."""
-    response = requests.get(f"{BASE_URL}/unknown")
+    response = api_client.get(f"/unknown")
     assert response.status_code == 200
     try:
         DefaultDraft7Validator(list_resources_schema, format_checker=format_checker).validate(response.json())
@@ -170,9 +175,9 @@ def test_list_resources_contract():
         pytest.fail(f"Schema validation failed: {e.message}")
 
 
-def test_get_user_contract_missing_field():
+def test_get_user_contract_missing_field(api_client):
     """Test response with a missing field."""
-    response = requests.get(f"{BASE_URL}/users/2")
+    response = api_client.get(f"/users/2")
     response_json = copy.deepcopy(response.json())  # Safe copy before modification
     if "avatar" in response_json["data"]:
         del response_json["data"]["avatar"]
