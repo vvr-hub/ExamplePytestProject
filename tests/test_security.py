@@ -5,6 +5,7 @@ from config.config_loader import ConfigLoader
 # Initialize ConfigLoader to fetch base_url from config.yaml
 config_loader = ConfigLoader()
 BASE_URL = config_loader.get('base_url')  # Fetch base_url dynamically from config
+WIREMOCK_URL = config_loader.get('wiremock_url')
 
 def test_sql_injection():
     """Attempt SQL Injection attack."""
@@ -34,7 +35,7 @@ def test_csrf_attack():
 
 def test_ssrf_attack():
     """Attempt an SSRF attack by requesting internal services."""
-    payload = {"url": "http://localhost:8080/admin"}
+    payload = {"url": f"{WIREMOCK_URL}/admin"}
     response = requests.post(f"{BASE_URL}/fetch-data", json=payload)
 
     assert response.status_code not in [200], "SSRF vulnerability detected!"

@@ -1,7 +1,10 @@
+from config.config_loader import ConfigLoader
 import pytest
 import requests
 
-BASE_URL = "https://reqres.in/api"
+# Initialize ConfigLoader to fetch base_url from config.yaml
+config_loader = ConfigLoader()
+BASE_URL = config_loader.get('base_url')  # Fetch base_url dynamically from config
 
 @pytest.fixture
 def api_client():
