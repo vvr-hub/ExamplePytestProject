@@ -1,3 +1,4 @@
+from config.config_loader import ConfigLoader
 import pytest
 import requests
 

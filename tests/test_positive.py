@@ -1,7 +1,6 @@
 import pytest
 from utils.api_client import APIClient
-from config.config_loader import config
-
+from config.config_loader import ConfigLoader
 
 @pytest.fixture
 def api_client():

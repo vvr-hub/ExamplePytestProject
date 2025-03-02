@@ -1,34 +1,42 @@
+# config_loader.py
 import yaml
 import os
 
-def load_config():
-    config_path = "config/config.yaml"  # Store path in a variable for clarity
 
-    if not os.path.exists(config_path):
-        raise FileNotFoundError(f"Configuration file not found at: {config_path}")
+class ConfigLoader:
+    def __init__(self, config_file="config/config.yaml"):
+        self.config_file = config_file
+        self.config = self.load_config()
 
-    try:
-        with open(config_path, "r") as file:
-            return yaml.safe_load(file)
-    except yaml.YAMLError as e:
-        raise ValueError(f"Error parsing YAML in {config_path}: {e}")  # More specific exception
-    except Exception as e: # Catch any other potential errors
-        raise Exception(f"An unexpected error occurred while loading config: {e}")
+    def load_config(self):
+        # Load the YAML configuration file
+        with open(self.config_file, 'r') as file:
+            config = yaml.safe_load(file)
 
-# Make config a global variable
-try:
-    config = load_config()
-except (FileNotFoundError, ValueError, Exception) as e:  # Catch specific exceptions
-    print(f"Error loading configuration: {e}") # Print the error
-    exit(1)  # Exit the program with a non-zero code to indicate an error
+        # Replace environment variable references with actual values
+        for key, value in config.items():
+            if isinstance(value, str) and "${" in value:
+                config[key] = self.resolve_env_variables(value)
 
-    # Handle the error appropriately in alternative ways. Here are some examples:
-    # 1. Use default config values or other fallback mechanisms
-    # config = {"base_url": "default_url", ...}
-    # 2. Reraise the exception if you want calling function to handle it
-    # raise # Re-raise the caught exception
+        return config
 
-if 'base_url' in config: # Check if config was loaded before using it
-    print(f"Base URL: {config['base_url']}")
-else:
-    print("Configuration not loaded. Using defaults or exiting...")
+    def resolve_env_variables(self, value):
+        # Look for environment variables wrapped in `${}`
+        start = value.find("${") + 2
+        end = value.find("}", start)
+        env_var = value[start:end]
+
+        # Get the environment variable value, or return the original if not found
+        env_value = os.getenv(env_var, f"${{{env_var}}}")
+        return value.replace(f"${{{env_var}}}", env_value)
+
+    def get(self, key):
+        # Retrieve a value from the loaded config
+        return self.config.get(key)
+
+# Example usage:
+# config_loader = ConfigLoader()
+# base_url = config_loader.get('base_url')
+# wiremock_url = config_loader.get('wiremock_url')
+# user_url = config_loader.get('user_url')
+# auth_token = config_loader.get('auth_token')
