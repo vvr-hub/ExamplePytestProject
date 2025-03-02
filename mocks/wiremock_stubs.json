@@ -1,0 +1,46 @@
+[
+  {
+    "request": {
+      "method": "GET",
+      "url": "/mocked-user"
+    },
+    "response": {
+      "status": 200,
+      "body": "{ \"id\": 1, \"name\": \"Mock User\" }",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "GET",
+      "url": "/admin/dashboard",
+      "headers": {
+        "Authorization": {
+          "matches": "Bearer QpwL5tke4Pnpja7X4"
+        }
+      }
+    },
+    "response": {
+      "status": 200,
+      "body": "{\"message\": \"Welcome to Admin Dashboard\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  {
+    "request": {
+      "method": "GET",
+      "url": "/admin/dashboard"
+    },
+    "response": {
+      "status": 401,
+      "body": "{ \"error\": \"Unauthorized access\" }",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }
+]

@@ -1,0 +1,2 @@
+base_url: "https://reqres.in/api"
+auth_token: "your_token_here"
