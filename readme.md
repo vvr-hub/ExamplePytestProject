@@ -178,8 +178,10 @@ curl -X POST "http://localhost:8080/__admin/mappings" \
 
 ## 🙏 Thanks And Acknowledgement
 
+
 Many thanks to the provider(s) of the test API https://reqres.in/api
 Thanks a lot, Ben Howdle. https://benhowdle.im/
+
 ---
 
 ### 🎯 Happy Testing! 🚀
