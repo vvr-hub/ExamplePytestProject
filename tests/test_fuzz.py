@@ -1,13 +1,29 @@
-from config.config_loader import ConfigLoader
 import pytest
 import requests
 import random
 import string
 import re
+import yaml
+from pathlib import Path
 
-# Initialise ConfigLoader to fetch the base URL(s) from config.yaml dynamically
-config_loader = ConfigLoader()
-BASE_URL = config_loader.get('base_url')
+
+# Load config from the root directory
+def load_config():
+    try:
+        # Get the root directory
+        root_dir = Path(__file__).resolve().parent.parent
+        # Construct the path to config.yaml (inside the config folder)
+        config_path = root_dir / 'config' / 'config.yaml'
+
+        with open(config_path, "r") as file:
+            return yaml.safe_load(file)
+    except FileNotFoundError:
+        print(f"Error: config.yaml not found at {config_path}")
+        raise
+
+
+config = load_config()
+BASE_URL = config["base_url"]
 
 
 def random_string(length=10):
@@ -72,7 +88,8 @@ def api_client():
 ])
 def test_fuzz_login(api_client, email, password):
     """Test login with various fuzzed inputs and verify error details."""
-    response = api_client.post(f"{BASE_URL}/login", json={"email": email, "password": password})
+    endpoint = config["endpoints"]["base_api"]["login"]
+    response = api_client.post(f"{BASE_URL}{endpoint}", json={"email": email, "password": password})
     assert response.status_code in [400, 401]
     response_json = response.json()
     assert "error" in response_json or "errors" in response_json

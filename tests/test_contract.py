@@ -4,6 +4,25 @@ import copy
 from utils.api_client import APIClient
 from jsonschema import ValidationError, Draft7Validator
 from uritemplate.template import URITemplate
+import yaml
+from pathlib import Path
+
+# Load config from the root directory
+def load_config():
+    try:
+        # Get the root directory
+        root_dir = Path(__file__).resolve().parent.parent
+        # Construct the path to config.yaml (inside the config folder)
+        config_path = root_dir / 'config' / 'config.yaml'
+
+        with open(config_path, "r") as file:
+            return yaml.safe_load(file)
+    except FileNotFoundError:
+        print(f"Error: config.yaml not found at {config_path}")
+        raise
+
+config = load_config()
+BASE_URL = config["base_url"]
 
 
 @pytest.fixture
@@ -136,7 +155,8 @@ Draft7Validator.check_schema(list_resources_schema)
 @pytest.mark.parametrize("user_id", [2, 3, 4])
 def test_get_user_contract(api_client, user_id):
     """Ensure response follows expected schema."""
-    response = api_client.get(f"/users/{user_id}")
+    endpoint = config["endpoints"]["base_api"]["users_by_id"].format(user_id=user_id)
+    response = api_client.get(f"{endpoint}")
     assert response.status_code == 200
     try:
         DefaultDraft7Validator(user_schema, format_checker=format_checker).validate(response.json())
@@ -146,7 +166,8 @@ def test_get_user_contract(api_client, user_id):
 
 def test_list_users_contract(api_client):
     """Ensure response follows expected schema for list of users."""
-    response = api_client.get(f"/users")
+    endpoint = config["endpoints"]["base_api"]["users"]
+    response = api_client.get(f"{endpoint}")
     assert response.status_code == 200
     try:
         DefaultDraft7Validator(list_users_schema, format_checker=format_checker).validate(response.json())
@@ -156,7 +177,8 @@ def test_list_users_contract(api_client):
 
 def test_single_resource_contract(api_client):
     """Ensure response follows expected schema for a single resource."""
-    response = api_client.get(f"/unknown/2")
+    endpoint = config["endpoints"]["base_api"]["unknown_by_id"].format(resource_id=2)
+    response = api_client.get(f"{endpoint}")
     assert response.status_code == 200
     try:
         DefaultDraft7Validator(resource_schema, format_checker=format_checker).validate(response.json())
@@ -166,7 +188,8 @@ def test_single_resource_contract(api_client):
 
 def test_list_resources_contract(api_client):
     """Ensure response follows expected schema for list of resources."""
-    response = api_client.get(f"/unknown")
+    endpoint = config["endpoints"]["base_api"]["unknown"]
+    response = api_client.get(f"{endpoint}")
     assert response.status_code == 200
     try:
         DefaultDraft7Validator(list_resources_schema, format_checker=format_checker).validate(response.json())
@@ -176,7 +199,8 @@ def test_list_resources_contract(api_client):
 
 def test_get_user_contract_missing_field(api_client):
     """Test response with a missing field."""
-    response = api_client.get(f"/users/2")
+    endpoint = config["endpoints"]["base_api"]["users_by_id"].format(user_id=2)
+    response = api_client.get(f"{endpoint}")
     response_json = copy.deepcopy(response.json())  # Safe copy before modification
     if "avatar" in response_json["data"]:
         del response_json["data"]["avatar"]

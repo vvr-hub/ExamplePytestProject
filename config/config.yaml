@@ -2,10 +2,20 @@
 base_url: "https://reqres.in/api"  # The base URL for the test API
 wiremock_url: "http://localhost:8080"  # Mock base URL
 
-# API Endpoints (relative to the base_url)
-user_url: "${base_url}/users"
-auth_url: "${base_url}/login"
-product_url: "${base_url}/products"
+# API Endpoints
+endpoints:
+  base_api:
+    login: "/login"
+    users: "/users"
+    users_page: "/users?page={page}"
+    users_by_id: "/users/{user_id}"
+    fetch_data: "/fetch-data"
+    unknown: "/unknown"
+    unknown_by_id: "/unknown/{resource_id}"
+  wiremock:
+    admin_dashboard: "/admin/dashboard"
+    mocked_user: "/mocked-user"
+    admin: "/admin"
 
 # Authentication Token (if needed for API requests)
 auth_token: "your_token_here"
