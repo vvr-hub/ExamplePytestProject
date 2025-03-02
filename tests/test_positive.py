@@ -2,9 +2,19 @@ import pytest
 from utils.api_client import APIClient
 from config.config_loader import config
 
+
 @pytest.fixture
 def api_client():
     return APIClient()
+
+
+@pytest.mark.parametrize("page", [1, 2, 3])
+def test_get_users_pages(api_client, page):
+    response = api_client.get(f"/users?page={page}")
+    assert response.status_code == 200
+    assert response.ok
+    assert "data" in response.json()
+
 
 def test_get_users_page_2_response_verification(api_client):
     """
@@ -40,4 +50,19 @@ def test_get_users_page_2_response_verification(api_client):
         assert "Tired of writing endless social media content?" in support["text"]
 
     except Exception as e:
-        pytest.fail(f"Test failed: {e}") # fail the test and print the error.
+        pytest.fail(f"Test failed: {e}")  # fail the test and print the error.
+
+
+def test_create_and_delete_user(api_client):
+    data = {"name": "John Doe", "job": "QA Engineer"}
+
+    create_response = api_client.post("/users", data)
+    assert create_response.status_code == 201
+    user_id = create_response.json()["id"]
+
+    delete_response = api_client.delete(f"/users/{user_id}")
+    assert delete_response.status_code == 204
+
+    # Verify that the user is actually deleted (example, by trying to GET it)
+    verify_delete_response = api_client.get(f"/users/{user_id}")
+    assert verify_delete_response.status_code == 404, "User should be deleted"
