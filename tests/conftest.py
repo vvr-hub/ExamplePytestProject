@@ -1,4 +1,3 @@
-# tests/conftest.py
 from config.config_loader import ConfigLoader
 import subprocess
 import requests
@@ -6,10 +5,11 @@ import pytest
 import time
 import os
 
-# Initialise ConfigLoader to fetch base_url from config.yaml dynamically
+# Use ConfigLoader to fetch base_url and wiremock_url dynamically
 config_loader = ConfigLoader()
-WIREMOCK_URL = config_loader.get('wiremock_url')
 BASE_URL = config_loader.get('base_url')
+WIREMOCK_URL = config_loader.get('wiremock_url')
+
 
 @pytest.fixture
 def api_client(requests_mock):
@@ -19,6 +19,7 @@ def api_client(requests_mock):
     _api_client.base_url = BASE_URL
     return _api_client
 
+
 @pytest.fixture
 def wiremock_client(requests_mock):
     def _wiremock_client():
@@ -26,6 +27,7 @@ def wiremock_client(requests_mock):
 
     _wiremock_client.base_url = WIREMOCK_URL
     return _wiremock_client
+
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_wiremock():
@@ -52,8 +54,8 @@ def setup_wiremock():
     if not is_wiremock_running():
         print("WireMock is not running. Starting WireMock in Docker...")
         try:
-            project_root = os.getcwd()  # get current working directory.
-            wiremock_volume_path = os.path.join(project_root, "wiremock")  # construct path to wiremock folder.
+            project_root = os.getcwd()
+            wiremock_volume_path = os.path.join(project_root, "wiremock")
             subprocess.run(
                 [
                     "docker", "run", "-d", "--rm", "--name", "wiremock",
@@ -64,30 +66,27 @@ def setup_wiremock():
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
-            # Wait for WireMock to be ready
-            time.sleep(5)  # Give it a few seconds to start
+            time.sleep(5)  # Wait for WireMock to be ready
         except subprocess.CalledProcessError as e:
             pytest.exit(f"Failed to start WireMock: {e.stderr.decode()}")
 
-        # Wait until WireMock is available
-        for _ in range(10):  # Try for 10 attempts
-            if is_wiremock_running():
-                break
-            time.sleep(1)
-        else:
-            pytest.exit("WireMock did not start in time.")
+    # Wait until WireMock is available
+    for _ in range(10):
+        if is_wiremock_running():
+            break
+        time.sleep(1)
+    else:
+        pytest.exit("WireMock did not start in time.")
 
     # Setup WireMock stubs
     setup_stub()
+
 
 def setup_stub():
     """Sets up WireMock stubs for testing."""
     stubs = [
         {
-            "request": {
-                "method": "GET",
-                "url": "/mocked-user"
-            },
+            "request": {"method": "GET", "url": "/mocked-user"},
             "response": {
                 "status": 200,
                 "body": '{"id": 1, "name": "Mock User"}',
@@ -99,30 +98,21 @@ def setup_stub():
                 "method": "GET",
                 "url": "/admin/dashboard",
                 "headers": {
-                    "Authorization": {
-                        "matches": "Bearer QpwL5tke4Pnpja7X4"
-                    }
+                    "Authorization": {"matches": "Bearer QpwL5tke4Pnpja7X4"}
                 }
             },
             "response": {
                 "status": 200,
-                "body": '{ "message": "Welcome to the admin dashboard" }',
-                "headers": {
-                    "Content-Type": "application/json"
-                }
+                "body": '{ "message": "Welcome to Admin Dashboard" }',
+                "headers": {"Content-Type": "application/json"}
             }
         },
         {
-            "request": {
-                "method": "GET",
-                "url": "/admin/dashboard"
-            },
+            "request": {"method": "GET", "url": "/admin/dashboard"},
             "response": {
                 "status": 401,
                 "body": '{ "error": "Unauthorized access" }',
-                "headers": {
-                    "Content-Type": "application/json"
-                }
+                "headers": {"Content-Type": "application/json"}
             }
         }
     ]
