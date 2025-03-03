@@ -1,6 +1,7 @@
 import requests
 from config.config_loader import ConfigLoader
 
+
 class APIClient:
     def __init__(self):
         # Use ConfigLoader for configuration

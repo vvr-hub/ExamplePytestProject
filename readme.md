@@ -15,7 +15,10 @@
 - **Docker** for seamless WireMock setup
 - **Logging & Reporting** for detailed test insights
 - **Modular Structure** for easy test maintenance
-- **Centralized Configuration** for URLs via `config.yaml`
+- **Centralized Configuration** for URLs and endpoints via `config.yaml`
+- **Parallelization** for running tests simultaneously
+- **Retries** for failing tests
+- **Reliability** Robust and independent tests free from flakiness
 
 ---
 
@@ -100,54 +103,72 @@ pytest -k "test_specific_function"
 ### 3️⃣ Rerunning Failing Tests
 
 - Rerun all failing tests 2 times
+
 ```sh
 pytest --reruns 2
 ```
+
 - Rerun a specific test file 2 times
+
 ```sh
 pytest tests/test_security.py --reruns 2
 ```
+
 - Rerun a specific test function 2 times
+
 ```sh
 pytest tests/test_security.py::test_sql_injection --reruns 2
 ```
+
 - Rerun tests matching a keyword 2 times
+
 ```sh
 pytest -k "security" --reruns 2
 ```
+
 - Add a 1-second delay between retries
+
 ```sh
 pytest --reruns 2 --reruns-delay 1
 ```
 
-
 ### 4️⃣ Running Tests in Parallel
 
 - Run tests using all available CPU cores:
+
 ```sh
 pytest -n auto
 ```
+
 - Run tests using a specific number of worker processes, for example 4
+
 ```sh
 pytest -n 4
 ```
+
 - Run tests in parallel with verbose output
+
 ```sh
 pytest -n auto -v
 ```
+
 - Load Balancing (loadscope)
+
 ```sh
 pytest -n 4 --dist=loadscope
 ```
+
 - Run Tests in Parallel and Retrying Failing Tests (example with 3 retries)
+
 ```sh
 pytest -n 4 --reruns 3 -v
 ```
+
 - Run Tests in Parallel, with retries (for Failing Tests), and HTML Report generated
+
 ```sh
 pytest -n 4 --reruns 3 -v --html=report.html
 ```
-
 
 ### 5️⃣ Generate HTML Test Report
 
@@ -194,34 +215,6 @@ Note that the tests/ folder contains all test files.
 
 ---
 
-## 🔄 WireMock Stub Configuration (Automatic)
-
-WireMock is automatically configured using `conftest.py`. If you need to manually add stubs, use:
-
-```sh
-curl -X POST "http://localhost:8080/__admin/mappings" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "request": {"method": "GET", "url": "/mocked-user"},
-    "response": {
-      "status": 200,
-      "body": "{\"id\": 1, \"name\": \"Mock User\"}",
-      "headers": {"Content-Type": "application/json"}
-    }
-  }'
-```
-
----
-
-## 📌 Best Practices
-
-- Keep test cases modular and independent.
-- Use `pytest fixtures` for test setup & teardown.
-- Always validate API response codes and payloads.
-- Maintain clear documentation.
-
----
-
 ## 📝 Author
 
 - **Venki Rao**
@@ -230,7 +223,6 @@ curl -X POST "http://localhost:8080/__admin/mappings" \
 ---
 
 ## 🙏 Thanks And Acknowledgement
-
 
 Many thanks to the provider(s) of the test API https://reqres.in/api
 Thanks a lot, Ben Howdle. https://benhowdle.im/

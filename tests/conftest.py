@@ -10,6 +10,7 @@ config_loader = ConfigLoader()
 BASE_URL = config_loader.get('base_url')
 WIREMOCK_URL = config_loader.get('wiremock_url')
 
+
 @pytest.fixture
 def api_client(requests_mock):
     def _api_client():
@@ -18,6 +19,7 @@ def api_client(requests_mock):
     _api_client.base_url = BASE_URL
     return _api_client
 
+
 @pytest.fixture
 def wiremock_client(requests_mock):
     def _wiremock_client():
@@ -25,6 +27,7 @@ def wiremock_client(requests_mock):
 
     _wiremock_client.base_url = WIREMOCK_URL
     return _wiremock_client
+
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_wiremock():
