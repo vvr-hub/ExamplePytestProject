@@ -1,5 +1,4 @@
-# conftest.py (in the tests directory)
-
+# tests/conftest.py
 from config.config_loader import ConfigLoader
 import subprocess
 import requests
@@ -10,7 +9,23 @@ import os
 # Initialise ConfigLoader to fetch base_url from config.yaml dynamically
 config_loader = ConfigLoader()
 WIREMOCK_URL = config_loader.get('wiremock_url')
+BASE_URL = config_loader.get('base_url')
 
+@pytest.fixture
+def api_client(requests_mock):
+    def _api_client():
+        return requests_mock.session()
+
+    _api_client.base_url = BASE_URL
+    return _api_client
+
+@pytest.fixture
+def wiremock_client(requests_mock):
+    def _wiremock_client():
+        return requests_mock.session()
+
+    _wiremock_client.base_url = WIREMOCK_URL
+    return _wiremock_client
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_wiremock():
@@ -54,17 +69,16 @@ def setup_wiremock():
         except subprocess.CalledProcessError as e:
             pytest.exit(f"Failed to start WireMock: {e.stderr.decode()}")
 
-    # Wait until WireMock is available
-    for _ in range(10):  # Try for 10 attempts
-        if is_wiremock_running():
-            break
-        time.sleep(1)
-    else:
-        pytest.exit("WireMock did not start in time.")
+        # Wait until WireMock is available
+        for _ in range(10):  # Try for 10 attempts
+            if is_wiremock_running():
+                break
+            time.sleep(1)
+        else:
+            pytest.exit("WireMock did not start in time.")
 
     # Setup WireMock stubs
     setup_stub()
-
 
 def setup_stub():
     """Sets up WireMock stubs for testing."""
