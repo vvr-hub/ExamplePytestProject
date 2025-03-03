@@ -7,3 +7,5 @@ allure-pytest
 wiremock
 jsonschema
 uritemplate
+pytest-rerunfailures
+pytest-xdist

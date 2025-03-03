@@ -1,3 +1,5 @@
+# conftest.py (in the tests directory)
+
 from config.config_loader import ConfigLoader
 import subprocess
 import requests

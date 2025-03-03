@@ -1,26 +1,11 @@
 import pytest
 import requests
-import yaml
-from pathlib import Path
-
-# Load config from the root directory
-def load_config():
-    try:
-        # Get the root directory
-        root_dir = Path(__file__).resolve().parent.parent
-        # Construct the path to config.yaml (inside the config folder)
-        config_path = root_dir / 'config' / 'config.yaml'
-
-        with open(config_path, "r") as file:
-            return yaml.safe_load(file)
-    except FileNotFoundError:
-        print(f"Error: config.yaml not found at {config_path}")
-        raise
+from utils.config_utils import load_config
 
 config = load_config()
-
 BASE_URL = config["base_url"]
 WIREMOCK_URL = config["wiremock_url"]
+
 
 def test_sql_injection():
     """Attempt SQL Injection attack."""
@@ -29,12 +14,14 @@ def test_sql_injection():
     response = requests.post(f"{BASE_URL}{endpoint}", json=payload)
     assert response.status_code in [400, 401], "SQL Injection might be possible!"
 
+
 def test_xss_attempt():
     """Attempt XSS attack."""
     payload = {"email": "<script>alert('xss')</script>", "password": "password"}
     endpoint = config["endpoints"]["base_api"]["login"]
     response = requests.post(f"{BASE_URL}{endpoint}", json=payload)
     assert response.status_code in [400, 401], "XSS vulnerability detected!"
+
 
 def test_csrf_attack():
     """Simulate a CSRF attack attempt."""
@@ -48,6 +35,7 @@ def test_csrf_attack():
 
     assert response.status_code in [400, 403], "Possible CSRF vulnerability!"
 
+
 def test_ssrf_attack():
     """Attempt an SSRF attack by requesting internal services."""
     wiremock_admin_endpoint = config["endpoints"]["wiremock"]["admin"]
@@ -56,6 +44,7 @@ def test_ssrf_attack():
     response = requests.post(f"{BASE_URL}{endpoint}", json=payload)
 
     assert response.status_code not in [200], "SSRF vulnerability detected!"
+
 
 @pytest.mark.skip(reason="API does not implement brute-force protection")
 def test_brute_force_protection():
@@ -70,6 +59,7 @@ def test_brute_force_protection():
 
     assert response is not None, "Request was never made, response is None!"
     assert response.status_code in [400, 401], "Brute-force protection might be missing!"
+
 
 @pytest.mark.skip(reason="API does not implement rate limiting")
 def test_rate_limiting():

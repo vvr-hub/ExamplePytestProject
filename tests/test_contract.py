@@ -4,22 +4,13 @@ import copy
 from utils.api_client import APIClient
 from jsonschema import ValidationError, Draft7Validator
 from uritemplate.template import URITemplate
-import yaml
-from pathlib import Path
-
-# Load config from the root directory
-def load_config():
-    try:
-        # Get the root directory
-        root_dir = Path(__file__).resolve().parent.parent
-        # Construct the path to config.yaml (inside the config folder)
-        config_path = root_dir / 'config' / 'config.yaml'
-
-        with open(config_path, "r") as file:
-            return yaml.safe_load(file)
-    except FileNotFoundError:
-        print(f"Error: config.yaml not found at {config_path}")
-        raise
+from utils.config_utils import load_config
+from schemas.api_schemas import (
+    user_schema,
+    list_users_schema,
+    resource_schema,
+    list_resources_schema,
+)
 
 config = load_config()
 BASE_URL = config["base_url"]
@@ -58,94 +49,7 @@ def extend_with_default(validator_class):
 
 DefaultDraft7Validator = extend_with_default(Draft7Validator)
 
-# Define and validate JSON schemas
-user_schema = {
-    "type": "object",
-    "properties": {
-        "data": {
-            "type": "object",
-            "properties": {
-                "id": {"type": "integer"},
-                "email": {"type": "string", "format": "email"},
-                "first_name": {"type": "string"},
-                "last_name": {"type": "string"},
-                "avatar": {"type": "string", "format": "uri"},
-            },
-            "required": ["id", "email", "first_name", "last_name", "avatar"],
-        }
-    },
-    "required": ["data"],
-}
-
-list_users_schema = {
-    "type": "object",
-    "properties": {
-        "page": {"type": "integer"},
-        "per_page": {"type": "integer"},
-        "total": {"type": "integer"},
-        "total_pages": {"type": "integer"},
-        "data": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "id": {"type": "integer"},
-                    "email": {"type": "string", "format": "email"},
-                    "first_name": {"type": "string"},
-                    "last_name": {"type": "string"},
-                    "avatar": {"type": "string", "format": "uri"},
-                },
-                "required": ["id", "email", "first_name", "last_name", "avatar"],
-            },
-        },
-    },
-    "required": ["page", "per_page", "total", "total_pages", "data"],
-}
-
-resource_schema = {
-    "type": "object",
-    "properties": {
-        "data": {
-            "type": "object",
-            "properties": {
-                "id": {"type": "integer"},
-                "name": {"type": "string"},
-                "year": {"type": "integer"},
-                "color": {"type": "string"},
-                "pantone_value": {"type": "string"},
-            },
-            "required": ["id", "name", "year", "color", "pantone_value"],
-        }
-    },
-    "required": ["data"],
-}
-
-list_resources_schema = {
-    "type": "object",
-    "properties": {
-        "page": {"type": "integer"},
-        "per_page": {"type": "integer"},
-        "total": {"type": "integer"},
-        "total_pages": {"type": "integer"},
-        "data": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "id": {"type": "integer"},
-                    "name": {"type": "string"},
-                    "year": {"type": "integer"},
-                    "color": {"type": "string"},
-                    "pantone_value": {"type": "string"},
-                },
-                "required": ["id", "name", "year", "color", "pantone_value"],
-            },
-        },
-    },
-    "required": ["page", "per_page", "total", "total_pages", "data"],
-}
-
-# Validate schemas to catch errors early
+# Validate API schemas to catch errors early
 Draft7Validator.check_schema(user_schema)
 Draft7Validator.check_schema(list_users_schema)
 Draft7Validator.check_schema(resource_schema)

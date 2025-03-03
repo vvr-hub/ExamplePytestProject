@@ -19,6 +19,12 @@
 
 ---
 
+### 🔧Recommended IDE
+
+For optimal coding experience with this project, I recommend using **PyCharm Community Edition**.
+
+---
+
 ## 🔧 Prerequisites
 
 Ensure you have the following installed before setting up the project:
@@ -91,19 +97,65 @@ pytest tests/test_mock.py
 pytest -k "test_specific_function"
 ```
 
-### 3️⃣ Run Tests with Detailed Logs
+### 3️⃣ Rerunning Failing Tests
 
+- Rerun all failing tests 2 times
 ```sh
-pytest -v
+pytest --reruns 2
+```
+- Rerun a specific test file 2 times
+```sh
+pytest tests/test_security.py --reruns 2
+```
+- Rerun a specific test function 2 times
+```sh
+pytest tests/test_security.py::test_sql_injection --reruns 2
+```
+- Rerun tests matching a keyword 2 times
+```sh
+pytest -k "security" --reruns 2
+```
+- Add a 1-second delay between retries
+```sh
+pytest --reruns 2 --reruns-delay 1
 ```
 
-### 4️⃣ Generate HTML Test Report
+
+### 4️⃣ Running Tests in Parallel
+
+- Run tests using all available CPU cores:
+```sh
+pytest -n auto
+```
+- Run tests using a specific number of worker processes, for example 4
+```sh
+pytest -n 4
+```
+- Run tests in parallel with verbose output
+```sh
+pytest -n auto -v
+```
+- Load Balancing (loadscope)
+```sh
+pytest -n 4 --dist=loadscope
+```
+- Run Tests in Parallel and Retrying Failing Tests (example with 3 retries)
+```sh
+pytest -n 4 --reruns 3 -v
+```
+- Run Tests in Parallel, with retries (for Failing Tests), and HTML Report generated
+```sh
+pytest -n 4 --reruns 3 -v --html=report.html
+```
+
+
+### 5️⃣ Generate HTML Test Report
 
 ```sh
 pytest --html=report.html
 ```
 
-### 5️⃣ Stop WireMock (if needed)
+### 6️⃣ Stop WireMock (if needed)
 
 ```sh
 docker stop wiremock
@@ -130,6 +182,7 @@ Note that the tests/ folder contains all test files.
 ├── 📂 utils
 ├── 📂 mocks
 ├── 📂 config
+├── 📂 schemas              # JSON schemas for API contract testing
 │
 ├── conftest.py             # Useful in the future for global test fixtures, etc
 ├── pytest.ini              # Pytest configurations
