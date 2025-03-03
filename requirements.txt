@@ -1,11 +1,10 @@
 requests
 pytest
 pytest-html
-pytest-mock
 pyyaml
 allure-pytest
-wiremock
 jsonschema
 uritemplate
 pytest-rerunfailures
 pytest-xdist
+requests-mock
