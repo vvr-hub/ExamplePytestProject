@@ -20,7 +20,7 @@
 - **Parallelization** for running tests simultaneously
 - **Retries** for failing tests
 - **Reusable** utils and fixtures, avoiding duplication of code
-- **Reliable** robust and independent tests, avoiding flakiness and hardcoding
+- **Reliable,** robust and independent tests, avoiding flakiness and hardcoding
 - **Test data separation** Dynamically load test data from relevant yaml file based on the target environment
 
 ---
@@ -70,9 +70,7 @@ docker --version
 3. **Ensure Docker is Running**
 
    If Docker is not running, start it manually.
-   ```sh
-   docker info
-   ```
+
 
 4. **Install Dependencies**
    ```sh
@@ -212,14 +210,9 @@ TEST_ENV=demo pytest
 ```
 
 **NOTE:** The demo and staging environments do not exist. To demonstrate the project's capability to switch between
-different test environments, these imaginary environments are specified. If we point to these environments, all tests
+different test environments, these imaginary environments are used. If we point to these environments, all tests
 fail, except for the mocked endpoints.
 
-### 6️⃣ Generate HTML Test Report
-
-```sh
-pytest --html=report.html
-```
 
 ---
 
@@ -230,18 +223,18 @@ Note that the tests/ folder contains all test files.
 
 📦 repo
 ├── 📂 tests
-│   ├── conftest.py                   # WireMock setup
-│   ├── test_authentication.py        # Authentication tests
-│   ├── test_contract.py              # Contract tests
-│   ├── test_fuzz.py                  # Fuzz tests
-│   ├── test_mock.py                  # Mock tests
-│   ├── test_negative.py              # Negative tests
-│   ├── test_positive.py              # Positive tests
-│   ├── test_security.py              # Security tests
+│   ├── conftest.py               # Setup, config and fixture management for the tests
+│   ├── test_authentication.py    # Authentication tests
+│   ├── test_contract.py          # Contract tests
+│   ├── test_fuzz.py              # Basic Fuzz tests
+│   ├── test_mock.py              # Mock tests
+│   ├── test_negative.py          # Negative scenarios
+│   ├── test_positive.py          # Happy path tests
+│   ├── test_security.py          # Basic Security tests
 │
-├── 📂 utils
-├── 📂 mocks
-├── 📂 config
+├── 📂 utils                # Reusable functions
+├── 📂 mocks                # Stubs
+├── 📂 config               # Base URLs, endpoints and config loader
 ├── 📂 schemas              # JSON schemas for API contract testing
 ├── 📂 data                 # Test data files for each test environment
 │   ├── qa.yaml                   # Data for Default Environment (QA Env)
