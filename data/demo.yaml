@@ -1,0 +1,13 @@
+# data/demo.yaml
+users:
+  valid_user:
+    name: "Demo User"
+    job: "Demo Job"
+  invalid_user:
+    name: "Demo Invalid"
+    job: "Demo Invalid"
+  user_to_update:
+    name: "Demo Updated"
+    job: "Demo Updated"
+  user_to_delete:
+    id: 4

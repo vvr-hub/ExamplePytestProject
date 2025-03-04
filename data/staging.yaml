@@ -1,0 +1,13 @@
+# data/staging.yaml
+users:
+  valid_user:
+    name: "Staging User"
+    job: "Staging Job"
+  invalid_user:
+    name: "Invalid Staging"
+    job: "Invalid Staging"
+  user_to_update:
+    name: "Staging Update"
+    job: "Staging Update"
+  user_to_delete:
+    id: 3

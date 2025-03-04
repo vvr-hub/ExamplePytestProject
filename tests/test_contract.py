@@ -13,6 +13,7 @@ from schemas.api_schemas import (
 # Custom format checker for strict URI validation
 format_checker = jsonschema.FormatChecker()
 
+
 @format_checker.checks("uri")
 def is_uri(instance):
     try:
@@ -20,6 +21,7 @@ def is_uri(instance):
         return True
     except ValueError:
         return False
+
 
 def extend_with_default(validator_class):
     validate_properties = validator_class.VALIDATORS["properties"]
@@ -33,6 +35,7 @@ def extend_with_default(validator_class):
 
     return jsonschema.validators.extend(validator_class, {"properties": set_defaults})
 
+
 DefaultDraft7Validator = extend_with_default(Draft7Validator)
 
 # Validate API schemas to catch errors early
@@ -41,16 +44,19 @@ Draft7Validator.check_schema(list_users_schema)
 Draft7Validator.check_schema(resource_schema)
 Draft7Validator.check_schema(list_resources_schema)
 
-@pytest.mark.parametrize("user_id", [2, 3, 4])
-def test_get_user_contract(api_client, user_id, config_loader):
+
+def test_get_user_contract(api_client, config_loader, data_loader):
     """Ensure response follows expected schema."""
-    endpoint = config_loader.get("endpoints")["base_api"]["users_by_id"].format(user_id=user_id)
-    response = api_client.get(endpoint)
-    assert response.status_code == 200
-    try:
-        DefaultDraft7Validator(user_schema, format_checker=format_checker).validate(response.json())
-    except ValidationError as e:
-        pytest.fail(f"Schema validation failed for user {user_id}: {e.message}")
+    user_ids = data_loader.get_data("contract", "user_ids")
+    for user_id in user_ids:
+        endpoint = config_loader.get("endpoints")["base_api"]["users_by_id"].format(user_id=user_id)
+        response = api_client.get(endpoint)
+        assert response.status_code == 200
+        try:
+            DefaultDraft7Validator(user_schema, format_checker=format_checker).validate(response.json())
+        except ValidationError as e:
+            pytest.fail(f"Schema validation failed for user {user_id}: {e.message}")
+
 
 def test_list_users_contract(api_client, config_loader):
     """Ensure response follows expected schema for list of users."""
@@ -62,9 +68,11 @@ def test_list_users_contract(api_client, config_loader):
     except ValidationError as e:
         pytest.fail(f"Schema validation failed: {e.message}")
 
-def test_single_resource_contract(api_client, config_loader):
+
+def test_single_resource_contract(api_client, config_loader, data_loader):
     """Ensure response follows expected schema for a single resource."""
-    endpoint = config_loader.get("endpoints")["base_api"]["unknown_by_id"].format(resource_id=2)
+    resource_id = data_loader.get_data("contract", "resource_id")
+    endpoint = config_loader.get("endpoints")["base_api"]["unknown_by_id"].format(resource_id=resource_id)
     response = api_client.get(endpoint)
     assert response.status_code == 200
     try:
@@ -72,15 +80,17 @@ def test_single_resource_contract(api_client, config_loader):
     except ValidationError as e:
         pytest.fail(f"Schema validation failed: {e.message}")
 
+
 def test_list_resources_contract(api_client, config_loader):
     """Ensure response follows expected schema for list of resources."""
     endpoint = config_loader.get("endpoints")["base_api"]["unknown"]
-    response = api_client.get(endpoint) # Remove f-string
+    response = api_client.get(endpoint)
     assert response.status_code == 200
     try:
         DefaultDraft7Validator(list_resources_schema, format_checker=format_checker).validate(response.json())
     except ValidationError as e:
         pytest.fail(f"Schema validation failed: {e.message}")
+
 
 def test_get_user_contract_missing_field(api_client, config_loader):
     """Test response with a missing field."""
@@ -92,16 +102,9 @@ def test_get_user_contract_missing_field(api_client, config_loader):
     with pytest.raises(ValidationError):
         DefaultDraft7Validator(user_schema, format_checker=format_checker).validate(response_json)
 
-def test_get_user_contract_invalid_email():
+
+def test_get_user_contract_invalid_email(data_loader):
     """Test response with invalid email format."""
-    invalid_email_json = {
-        "data": {
-            "id": 2,
-            "email": "invalid_email",
-            "first_name": "Janet",
-            "last_name": "Weaver",
-            "avatar": "https://reqres.in/img/faces/2-image.jpg",
-        }
-    }
+    invalid_email_json = data_loader.get_data("contract", "invalid_email_user")
     with pytest.raises(ValidationError):
         DefaultDraft7Validator(user_schema, format_checker=format_checker).validate(invalid_email_json)

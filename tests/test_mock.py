@@ -1,22 +1,23 @@
 import requests
-from utils.config_utils import load_config
+from config.config_loader import ConfigLoader
 
-config = load_config()
+config_loader = ConfigLoader()
 
-def test_mocked_api(requests_mock):
+def test_mocked_api(requests_mock, data_loader):
     """Test the mocked API endpoint using requests_mock."""
-    wiremock_url = config["wiremock_url"]
-    mocked_user_endpoint = config["endpoints"]["wiremock"]["mocked_user"]
+    wiremock_url = config_loader.get("wiremock_url")
+    mocked_user_endpoint = config_loader.get_endpoints("wiremock", "mocked_user")
     full_url = f"{wiremock_url}{mocked_user_endpoint}"
 
     # Define the mock behavior
+    mocked_data = data_loader.get_data("mocked_user")
     requests_mock.get(
         full_url,
-        json={"name": "Mock User", "id": 123},  # Example JSON response
+        json=mocked_data,
         status_code=200,
     )
 
     response = requests.get(full_url)
     assert response.status_code == 200
-    assert response.json()["name"] == "Mock User"
-    assert response.json()["id"] == 123 #adding additional assertion to ensure mock is working.
+    assert response.json()["name"] == mocked_data["name"]
+    assert response.json()["id"] == mocked_data["id"]
