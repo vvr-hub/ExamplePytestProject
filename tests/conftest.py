@@ -10,7 +10,6 @@ config_loader = ConfigLoader()
 BASE_URL = config_loader.get('base_url')
 WIREMOCK_URL = config_loader.get('wiremock_url')
 
-
 @pytest.fixture
 def api_client(requests_mock):
     def _api_client():
@@ -18,7 +17,6 @@ def api_client(requests_mock):
 
     _api_client.base_url = BASE_URL
     return _api_client
-
 
 @pytest.fixture
 def wiremock_client(requests_mock):
@@ -28,10 +26,8 @@ def wiremock_client(requests_mock):
     _wiremock_client.base_url = WIREMOCK_URL
     return _wiremock_client
 
-
-@pytest.fixture(scope="session", autouse=True)
-def setup_wiremock():
-    """Ensures WireMock is running and configures stubs before tests start."""
+def _setup_wiremock():
+    """Ensures WireMock is running and configures stubs."""
     try:
         subprocess.run(["docker", "info"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.CalledProcessError:
@@ -74,3 +70,7 @@ def setup_wiremock():
         response = requests.post(f"{WIREMOCK_URL}/__admin/mappings", json=stub)
         if response.status_code not in [200, 201]:
             pytest.exit(f"Failed to configure WireMock stub: {response.text}")
+
+def pytest_sessionstart(session):
+    """Called before the start of the test session."""
+    _setup_wiremock()
