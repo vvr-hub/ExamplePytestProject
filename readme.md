@@ -16,6 +16,7 @@
 - **Logging & Reporting** for detailed test insights
 - **Modular Structure** for easy test maintenance
 - **Centralized Configuration** for URLs and endpoints via `config.yaml`
+- **Environment Configurability** Easily switch between different environments while running tests
 - **Parallelization** for running tests simultaneously
 - **Retries** for failing tests
 - **Reliability** Robust and independent tests free from flakiness
@@ -170,16 +171,54 @@ pytest -n 4 --reruns 3 -v
 pytest -n 4 --reruns 3 -v --html=report.html
 ```
 
-### 5️⃣ Generate HTML Test Report
+### 5️⃣ Setting the desired environment to run tests
+
+- To run tests on the default environment (QA env).
+
+If no TEST_ENV is set, it defaults to QA.
+
+```sh
+pytest (or pytest -n auto)
+```
+
+- You can explicitly set the environment to QA
+
+```sh
+TEST_ENV=qa pytest -n auto
+```
+
+- To run tests on QA environment in parallel with retries and report generation
+
+```sh
+TEST_ENV=qa pytest -n 4 --reruns 3 -v --html=report.html
+```
+
+or simply as below (without setting the TEST_ENV)
+
+```sh
+pytest -n 4 --reruns 3 -v --html=report.html
+```
+
+- To run tests against Staging environment
+
+```sh
+TEST_ENV=staging pytest
+```
+
+- To run tests against Demo environment
+
+```sh
+TEST_ENV=demo pytest
+```
+
+**NOTE:** The demo and staging environments do not exist. To demonstrate the project's capability to switch between
+different test environments, these imaginary environments are specified. If we point to these environments, all tests
+fail, except for the mocked endpoints.
+
+### 6️⃣ Generate HTML Test Report
 
 ```sh
 pytest --html=report.html
-```
-
-### 6️⃣ Stop WireMock (if needed)
-
-```sh
-docker stop wiremock
 ```
 
 ---

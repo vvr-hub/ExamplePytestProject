@@ -7,27 +7,33 @@ import os
 import json
 from utils.api_client import APIClient
 
+
 @pytest.fixture(scope="session")
 def config_loader():
     return ConfigLoader()
+
 
 @pytest.fixture(scope="session")
 def base_url(config_loader):
     return config_loader.get_base_url()
 
+
 @pytest.fixture(scope="session")
 def wiremock_url(config_loader):
-    return config_loader.get('wiremock_url')
+    return config_loader.get_wiremock_url()
+
 
 @pytest.fixture(scope="session")
 def api_client(base_url, config_loader):
-    return APIClient(base_url, config_loader.get('auth_token'))
+    return APIClient(base_url, config_loader.get_auth_token())
+
 
 @pytest.fixture
 def wiremock_client(wiremock_url):
     session = requests.Session()
     session.base_url = wiremock_url
     return session
+
 
 def _setup_wiremock(wiremock_url):
     """Ensures WireMock is running and configures stubs."""
@@ -74,8 +80,9 @@ def _setup_wiremock(wiremock_url):
         if response.status_code not in [200, 201]:
             pytest.exit(f"Failed to configure WireMock stub: {response.text}")
 
+
 def pytest_sessionstart(session):
     """Called before the start of the test session."""
     config_loader_instance = ConfigLoader()
-    wiremock_url_instance = config_loader_instance.get('wiremock_url')
+    wiremock_url_instance = config_loader_instance.get_wiremock_url()
     _setup_wiremock(wiremock_url_instance)

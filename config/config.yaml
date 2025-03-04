@@ -1,5 +1,9 @@
 # Base URLs for the API
-base_url: "https://reqres.in/api"  # The base URL for the test API
+base_urls:
+  qa: "https://reqres.in/api"   # QA environment base URL
+  staging: "http://staging.reqres.in/api"   # Staging environment base URL
+  demo: "http://demo.reqres.in/api"   # Demo environment base URL
+
 wiremock_url: "http://localhost:8080"  # Mock base URL
 
 # API Endpoints
