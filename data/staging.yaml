@@ -1,13 +1,61 @@
 # data/staging.yaml
+auth:
+  valid_credentials:
+    email: "eve.holt@reqres.in"
+    password: "cityslicka"
+  invalid_credentials:
+    email: "invalid@example.com"
+    password: "wrongpass"
+  invalid_token: "invalid_token"
+
 users:
   valid_user:
-    name: "Staging User"
-    job: "Staging Job"
-  invalid_user:
-    name: "Invalid Staging"
-    job: "Invalid Staging"
-  user_to_update:
-    name: "Staging Update"
-    job: "Staging Update"
-  user_to_delete:
-    id: 3
+    name: "John Doe"
+    job: "QA Engineer"
+  first_page_user:
+    id: 7
+    email: "michael.lawson@reqres.in"
+    first_name: "Michael"
+    last_name: "Lawson"
+    avatar: "https://reqres.in/img/faces/7-image.jpg"
+  support:
+    url: "https://contentcaddy.io"
+    text: "Tired of writing endless social media content?"
+  non_existent_user_id: 9999
+  non_existent_update_user_id: 9992
+  update_data:
+    name: "Updated Name"
+    job: "Updated Job"
+  invalid_user_data:
+    name: 123
+    job: [ "developer" ]
+
+contract:
+  user_ids: [ 2, 3, 4 ]
+  resource_id: 2
+  invalid_email_user:
+    data:
+      id: 2
+      email: "invalid_email"
+      first_name: "Janet"
+      last_name: "Weaver"
+      avatar: "https://reqres.in/img/faces/2-image.jpg"
+
+security:
+  sql_injection_payload:
+    email: "admin' OR 1=1 --"
+    password: "password"
+  xss_payload:
+    email: "<script>alert('xss')</script>"
+    password: "password"
+  csrf_payload:
+    email: "victim@example.com"
+    password: "password123"
+  valid_user_credentials:
+    email: "eve.holt@reqres.in"
+    password: "wrongpassword"
+  test_token: "test_token"
+
+mocked_user:
+  name: "Mock User"
+  id: 123

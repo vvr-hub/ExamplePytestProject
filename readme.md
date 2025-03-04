@@ -11,15 +11,17 @@
 ## ⚡ Features
 
 - **Pytest** for running API tests
-- **WireMock** for mocking API responses
+- **WireMock** for mocking API responses for endpoints which are not yet developed
 - **Docker** for seamless WireMock setup
-- **Logging & Reporting** for detailed test insights
-- **Modular Structure** for easy test maintenance
+- **Reporting** for detailed test insights
+- **Modular Structure** for easy test maintenance and scalability
 - **Centralized Configuration** for URLs and endpoints via `config.yaml`
 - **Environment Configurability** Easily switch between different environments while running tests
 - **Parallelization** for running tests simultaneously
 - **Retries** for failing tests
-- **Reliability** Robust and independent tests free from flakiness
+- **Reusable** utils and fixtures, avoiding duplication of code
+- **Reliable** robust and independent tests, avoiding flakiness and hardcoding
+- **Test data separation** Dynamically load test data from relevant yaml file based on the target environment
 
 ---
 
@@ -33,14 +35,12 @@ For optimal coding experience with this project, I recommend using **PyCharm Com
 
 Ensure you have the following installed before setting up the project:
 
-1. **Python 3.9+** [Download here](https://www.python.org/downloads/)
+1. **Python 3.9+**
 2. **Pipenv** (for dependency management):
    ```sh
    pip install pipenv
    ```
 3. **Docker** (for WireMock container):
-    - [Mac & Windows](https://www.docker.com/products/docker-desktop/)
-    - [Linux](https://docs.docker.com/engine/install/)
 
 To verify installation:
 
@@ -243,6 +243,10 @@ Note that the tests/ folder contains all test files.
 ├── 📂 mocks
 ├── 📂 config
 ├── 📂 schemas              # JSON schemas for API contract testing
+├── 📂 data                 # Test data files for each test environment
+│   ├── qa.yaml                   # Data for Default Environment (QA Env)
+│   ├── staging.yaml              # Data for Staging Environment
+│   ├── demo.yaml                 # Data for Demo Environment
 │
 ├── conftest.py             # Useful in the future for global test fixtures, etc
 ├── pytest.ini              # Pytest configurations
