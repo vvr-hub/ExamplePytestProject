@@ -178,7 +178,7 @@ pytest -n 4 --reruns 3 -v --html=report.html
 If no TEST_ENV is set, it defaults to QA.
 
 ```sh
-pytest (or pytest -n auto)
+pytest -n auto
 ```
 
 - You can explicitly set the environment to QA
