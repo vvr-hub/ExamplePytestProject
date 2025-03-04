@@ -32,3 +32,7 @@ class ConfigLoader:
     def get(self, key):
         # Retrieve a value from the loaded config
         return self.config.get(key)
+
+    def get_base_url(self):
+        # Retrieve the base_url from the loaded config
+        return self.get('base_url')

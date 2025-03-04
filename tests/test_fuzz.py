@@ -1,12 +1,8 @@
 import pytest
-import requests
 import random
 import string
 import re
-from utils.config_utils import load_config
 
-config = load_config()
-BASE_URL = config["base_url"]
 
 random.seed(42)  # Set a fixed seed
 
@@ -26,13 +22,6 @@ def random_email(length=8):
 def random_int_string(length=5):
     """Generates a random string of numbers."""
     return ''.join(random.choices(string.digits, k=length))
-
-
-@pytest.fixture
-def api_client():
-    """Provides a requests.Session object for API interactions."""
-    session = requests.Session()
-    return session
 
 
 @pytest.mark.parametrize("email,password", [
@@ -71,10 +60,10 @@ def api_client():
     # ("test@example.com", "~"), # valid email, tilde password - Not robustly handled
     # ("~", "password"), # tilde email, valid password - Not robustly handled
 ])
-def test_fuzz_login(api_client, email, password):
+def test_fuzz_login(api_client, email, password, config_loader):
     """Test login with various fuzzed inputs and verify error details."""
-    endpoint = config["endpoints"]["base_api"]["login"]
-    response = api_client.post(f"{BASE_URL}{endpoint}", json={"email": email, "password": password})
+    endpoint = config_loader.get("endpoints")["base_api"]["login"]
+    response = api_client.post(endpoint, data={"email": email, "password": password})
     assert response.status_code in [400, 401]
     response_json = response.json()
     assert "error" in response_json or "errors" in response_json

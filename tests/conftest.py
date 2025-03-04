@@ -5,28 +5,31 @@ import pytest
 import time
 import os
 import json
+from utils.api_client import APIClient
 
-config_loader = ConfigLoader()
-BASE_URL = config_loader.get('base_url')
-WIREMOCK_URL = config_loader.get('wiremock_url')
+@pytest.fixture(scope="session")
+def config_loader():
+    return ConfigLoader()
+
+@pytest.fixture(scope="session")
+def base_url(config_loader):
+    return config_loader.get_base_url()
+
+@pytest.fixture(scope="session")
+def wiremock_url(config_loader):
+    return config_loader.get('wiremock_url')
+
+@pytest.fixture(scope="session")
+def api_client(base_url, config_loader):
+    return APIClient(base_url, config_loader.get('auth_token'))
 
 @pytest.fixture
-def api_client(requests_mock):
-    def _api_client():
-        return requests_mock.session()
+def wiremock_client(wiremock_url):
+    session = requests.Session()
+    session.base_url = wiremock_url
+    return session
 
-    _api_client.base_url = BASE_URL
-    return _api_client
-
-@pytest.fixture
-def wiremock_client(requests_mock):
-    def _wiremock_client():
-        return requests_mock.session()
-
-    _wiremock_client.base_url = WIREMOCK_URL
-    return _wiremock_client
-
-def _setup_wiremock():
+def _setup_wiremock(wiremock_url):
     """Ensures WireMock is running and configures stubs."""
     try:
         subprocess.run(["docker", "info"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -35,7 +38,7 @@ def _setup_wiremock():
 
     def is_wiremock_running():
         try:
-            response = requests.get(f"{WIREMOCK_URL}/__admin", allow_redirects=False)
+            response = requests.get(f"{wiremock_url}/__admin", allow_redirects=False)
             return response.status_code in (200, 302)
         except requests.exceptions.ConnectionError:
             return False
@@ -67,10 +70,12 @@ def _setup_wiremock():
         stubs = json.load(f)
 
     for stub in stubs:
-        response = requests.post(f"{WIREMOCK_URL}/__admin/mappings", json=stub)
+        response = requests.post(f"{wiremock_url}/__admin/mappings", json=stub)
         if response.status_code not in [200, 201]:
             pytest.exit(f"Failed to configure WireMock stub: {response.text}")
 
 def pytest_sessionstart(session):
     """Called before the start of the test session."""
-    _setup_wiremock()
+    config_loader_instance = ConfigLoader()
+    wiremock_url_instance = config_loader_instance.get('wiremock_url')
+    _setup_wiremock(wiremock_url_instance)

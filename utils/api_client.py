@@ -1,31 +1,30 @@
 import requests
-from config.config_loader import ConfigLoader
-
 
 class APIClient:
-    def __init__(self):
-        # Use ConfigLoader for configuration
-        config_loader = ConfigLoader()
-        self.base_url = config_loader.get('base_url')
-        self.auth_token = config_loader.get('auth_token')
-        self.headers = {"Authorization": f"Bearer {self.auth_token}"}
+    def __init__(self, base_url, auth_token=None):
+        self.base_url = base_url
+        self.auth_token = auth_token
+        self.session = requests.Session()
 
-    def get(self, endpoint, params=None):
-        # Send a GET request to the API
-        response = requests.get(f"{self.base_url}{endpoint}", params=params, headers=self.headers)
-        return response
+    def post(self, endpoint, data=None, headers=None):  # Added headers parameter
+        url = f"{self.base_url}{endpoint}"
+        default_headers = {"Authorization": f"Bearer {self.auth_token}"} if self.auth_token else {}
+        if headers:
+            default_headers.update(headers) # Merge custom headers if provided
+        return self.session.post(url, json=data, headers=default_headers)
 
-    def post(self, endpoint, data):
-        # Send a POST request to the API
-        response = requests.post(f"{self.base_url}{endpoint}", json=data, headers=self.headers)
-        return response
+    def get(self, endpoint, headers=None):
+        url = f"{self.base_url}{endpoint}"
+        if headers:
+            return self.session.get(url, headers=headers)
+        return self.session.get(url)
 
-    def put(self, endpoint, data):
-        # Send a PUT request to the API
-        response = requests.put(f"{self.base_url}{endpoint}", json=data, headers=self.headers)
-        return response
+    def put(self, endpoint, data=None):
+        url = f"{self.base_url}{endpoint}"
+        headers = {"Authorization": f"Bearer {self.auth_token}"} if self.auth_token else {}
+        return self.session.put(url, json=data, headers=headers)
 
     def delete(self, endpoint):
-        # Send a DELETE request to the API
-        response = requests.delete(f"{self.base_url}{endpoint}", headers=self.headers)
-        return response
+        url = f"{self.base_url}{endpoint}"
+        headers = {"Authorization": f"Bearer {self.auth_token}"} if self.auth_token else {}
+        return self.session.delete(url, headers=headers)
