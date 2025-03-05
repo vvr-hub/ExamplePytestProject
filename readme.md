@@ -6,22 +6,23 @@
 - It also utilises WireMock for mocking APIs.
 - It supports functional testing, mock testing, fuzz testing, security testing, contract testing, negative testing, etc.
 - The project provides some sample tests. The aim here is not to provide comprehensive test coverage.
-- IMPORTANT NOTE: This is a **work in progress** project with scope for improvement and adopting best practices.
+- IMPORTANT NOTE: This is a **work in progress** project with scope for improvement.
 
 ## ⚡ Features
 
 - **Pytest** for running API tests
-- **WireMock** for mocking API responses for endpoints which are not yet developed
+- **WireMock** to mock API responses for endpoints which aren't yet developed/available for consumption
 - **Docker** for seamless WireMock setup
-- **Reporting** for detailed test insights
-- **Modular Structure** for easy test maintenance and scalability
-- **Centralized Configuration** for URLs and endpoints via `config.yaml`
+- **Reporting** for test results and metrics
+- **Centralised Configuration** for URLs and endpoints via `config.yaml`
 - **Environment Configurability** Easily switch between different environments while running tests
-- **Parallelization** for running tests simultaneously
+- **Test data separation** from tests. Data is loaded dynamically from relevant file as per the target test environment
+- **Parallelisation** for running tests simultaneously
 - **Retries** for failing tests
+- **Modular Structure** for easy test maintenance and scalability
 - **Reusable** utils and fixtures, avoiding duplication of code
 - **Reliable,** robust and independent tests, avoiding flakiness and hardcoding
-- **Test data separation** Dynamically load test data from relevant yaml file based on the target environment
+
 
 ---
 
@@ -223,14 +224,14 @@ Note that the tests/ folder contains all test files.
 
 📦 repo
 ├── 📂 tests
-│   ├── conftest.py               # Setup, config and fixture management for the tests
-│   ├── test_authentication.py    # Authentication tests
-│   ├── test_contract.py          # Contract tests
-│   ├── test_fuzz.py              # Basic Fuzz tests
-│   ├── test_mock.py              # Mock tests
-│   ├── test_negative.py          # Negative scenarios
-│   ├── test_positive.py          # Happy path tests
-│   ├── test_security.py          # Basic Security tests
+│   ├── conftest.py             # Setup, config and fixture management for the tests
+│   ├── test_authentication.py  # Authentication tests
+│   ├── test_contract.py        # Contract tests
+│   ├── test_fuzz.py            # Basic Fuzz tests
+│   ├── test_mock.py            # Mock tests
+│   ├── test_negative.py        # Negative scenarios
+│   ├── test_positive.py        # Happy path tests
+│   ├── test_security.py        # Basic Security tests
 │
 ├── 📂 utils                # Reusable functions
 ├── 📂 mocks                # Stubs
@@ -254,7 +255,7 @@ Note that the tests/ folder contains all test files.
 ## 📝 Author
 
 - **Venki Rao**
-- **GitHub:** [vvr_hub](https://github.com/your-username)
+- **GitHub:** [vvr_hub]([https://github.com/vvr-hub]
 
 ---
 
