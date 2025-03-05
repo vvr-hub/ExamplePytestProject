@@ -13,7 +13,7 @@
 - **Pytest** for running API tests
 - **WireMock** to mock API responses for endpoints which aren't yet developed/available for consumption
 - **Docker** for seamless WireMock setup
-- **Reporting** for test results and metrics
+- **Reporting** for test results and metrics using Allure
 - **Centralised Configuration** for URLs and endpoints via `config.yaml`
 - **Environment Configurability** Easily switch between different environments while running tests
 - **Test data separation** from tests. Data is loaded dynamically from relevant file as per the target test environment
@@ -167,7 +167,7 @@ pytest -n 4 --reruns 3 -v
 - Run Tests in Parallel, with retries (for Failing Tests), and HTML Report generated
 
 ```sh
-pytest -n 4 --reruns 3 -v --html=report.html
+pytest -n 4 --reruns 3 -v --alluredir=allure-results
 ```
 
 ### 5️⃣ Setting the desired environment to run tests
@@ -189,13 +189,13 @@ TEST_ENV=qa pytest -n auto
 - To run tests on QA environment in parallel with retries and report generation
 
 ```sh
-TEST_ENV=qa pytest -n 4 --reruns 3 -v --html=report.html
+TEST_ENV=qa pytest -n 4 --reruns 3 -v --alluredir=allure-results
 ```
 
 or simply as below (without setting the TEST_ENV)
 
 ```sh
-pytest -n 4 --reruns 3 -v --html=report.html
+pytest -n 4 --reruns 3 -v --alluredir=allure-results
 ```
 
 - To run tests against Staging environment
@@ -214,6 +214,28 @@ TEST_ENV=demo pytest
 different test environments, these imaginary environments are used. If we point to these environments, all tests
 fail, except for the mocked endpoints.
 
+### 6️⃣ View Test Reports for results and metrics using Allure
+
+- Run Your Pytest Tests with Allure:
+- Execute the Pytest tests with the --alluredir option. This option specifies the directory where Allure will store the test results.
+
+```sh
+pytest --alluredir=allure-results
+```
+
+- or with more specific requirements using the commands like below.
+
+```sh
+TEST_ENV=qa pytest -n auto --reruns 1 -v --alluredir=allure-results
+```
+
+- After the tests have finished, use the allure command-line tool to generate the HTML report from the results
+
+```sh
+allure serve allure-results
+```
+
+- Once the report finishes generating, the Allure Report will open in the browser.
 
 ---
 
