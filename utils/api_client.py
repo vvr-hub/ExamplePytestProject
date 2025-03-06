@@ -1,4 +1,3 @@
-# utils/api_client.py
 import requests
 
 
