@@ -7,7 +7,7 @@ import time
 import os
 import json
 from utils.api_client import APIClient
-from utils.data_loader import DataLoader
+from data.data_loader import DataLoader
 
 @pytest.fixture(scope="session")
 def config_loader():
