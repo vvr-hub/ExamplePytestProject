@@ -260,10 +260,10 @@ Note that the tests/ folder contains all test files.
 ├── 📂 config               # Base URLs, endpoints and config loader
 ├── 📂 schemas              # JSON schemas for API contract testing
 ├── 📂 data                 # Test data files for each test environment and data loader
-│   ├── qa.yaml                   # Data for Default Environment (QA Env)
-│   ├── staging.yaml              # Data for Staging Environment
-│   ├── demo.yaml                 # Data for Demo Environment
-│   ├── data_loader.py            # Data Loader
+│   ├── qa.yaml                 # Data for Default Environment (QA Env)
+│   ├── staging.yaml            # Data for Staging Environment
+│   ├── demo.yaml               # Data for Demo Environment
+│   ├── data_loader.py          # Data Loader
 │
 ├── conftest.py             # Useful in the future for global test fixtures, etc
 ├── pytest.ini              # Pytest configurations

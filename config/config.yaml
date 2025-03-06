@@ -20,6 +20,3 @@ endpoints:
     admin_dashboard: "/admin/dashboard"
     mocked_user: "/mocked-user"
     admin: "/admin"
-
-# Authentication Token (if needed for API requests)
-auth_token: "your_token_here"
