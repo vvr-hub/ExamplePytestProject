@@ -1,5 +1,3 @@
-# tests/websockets/test_websocket.py
-
 import pytest
 import asyncio
 import json
@@ -8,7 +6,6 @@ import logging
 from utils.websocket_utils import send_message, receive_message, ping_pong
 
 logger = logging.getLogger(__name__)
-
 
 # -------------------- 1. Basic Message Exchange Tests --------------------
 
@@ -19,11 +16,9 @@ async def test_send_receive_message(websocket_connection):
     await send_message(websocket_connection, test_message)
     response = await receive_message(websocket_connection)
 
-    logger.info(f"Received response: {response}")
+    logger.info(f"Sent: {test_message}, Received: {response}")
 
-    expected_responses = [test_message, "echo.websocket.events sponsored by Lob.com"]
-    assert response in expected_responses, f"Unexpected response: '{response}'"
-
+    assert response == test_message, f"Unexpected response: '{response}'"
 
 @pytest.mark.asyncio
 async def test_send_receive_json(websocket_connection):
@@ -34,11 +29,7 @@ async def test_send_receive_json(websocket_connection):
     await send_message(websocket_connection, message)
     response = await receive_message(websocket_connection)
 
-    logger.info(f"Received JSON response: {response}")
-
-    # Ignore non-JSON responses from WebSocket
-    if "sponsored by Lob.com" in response:
-        pytest.skip("WebSocket service does not support JSON echo")
+    logger.info(f"Sent JSON: {message}, Received JSON: {response}")
 
     try:
         received_data = json.loads(response.strip())
@@ -46,27 +37,21 @@ async def test_send_receive_json(websocket_connection):
     except json.JSONDecodeError:
         pytest.fail(f"Received non-JSON message: {response}")
 
-
 @pytest.mark.asyncio
 async def test_send_large_message(websocket_connection):
-    """Test sending and receiving a medium-sized message."""
-    message = "A" * 500
+    """Test sending and receiving a large message."""
+    message = "A" * 500  # Keeping message size manageable
     await send_message(websocket_connection, message)
     response = await receive_message(websocket_connection)
 
     logger.info(f"Sent large message of size {len(message)}. Received: {response}")
 
-    if "sponsored by Lob.com" in response:
-        pytest.skip("WebSocket service does not properly echo large messages")
-
-    assert message in response, "Large message response mismatch"
-
+    assert response == message, "Large message response mismatch"
 
 @pytest.mark.asyncio
 async def test_multiple_messages(websocket_connection):
     """Test sending and receiving multiple messages."""
     messages = ["First message", "Second message", "Third message"]
-    received_messages = set()
 
     for msg in messages:
         await send_message(websocket_connection, msg)
@@ -74,11 +59,7 @@ async def test_multiple_messages(websocket_connection):
 
         logger.info(f"Sent: {msg}, Received: {response}")
 
-        received_messages.add(msg)
-        received_messages.add("echo.websocket.events sponsored by Lob.com")
-
-        assert response in received_messages, f"Unexpected response: '{response}'"
-
+        assert response == msg, f"Unexpected response: '{response}'"
 
 # -------------------- 2. WebSocket Functionalities Tests --------------------
 
@@ -92,14 +73,12 @@ async def test_ping_pong(websocket_connection):
         logger.error(f"Ping-Pong failed: {e}")
         pytest.fail(f"Ping-Pong failed: {e}")
 
-
 @pytest.mark.asyncio
 async def test_open_close_connection(websocket_url):
     """Test opening and closing the WebSocket connection."""
     async with websockets.connect(websocket_url) as websocket:
         assert websocket.state == websockets.protocol.State.OPEN, "WebSocket should be open upon connection"
     assert websocket.state == websockets.protocol.State.CLOSED, "WebSocket should be closed after exiting context"
-
 
 # -------------------- 3. Negative Scenario Tests (Error Handling) --------------------
 
@@ -110,13 +89,11 @@ async def test_invalid_websocket_uri():
         async with websockets.connect("wss://invalid-uri"):
             pass
 
-
 @pytest.mark.asyncio
 async def test_connection_timeout():
     """Test WebSocket connection timeout handling."""
     with pytest.raises(asyncio.TimeoutError):
-        await asyncio.wait_for(websockets.connect("wss://echo.websocket.events"), timeout=0.001)
-
+        await asyncio.wait_for(websockets.connect("wss://ws.postman-echo.com/raw"), timeout=0.001)
 
 @pytest.mark.asyncio
 async def test_send_after_close(websocket_url):
@@ -126,7 +103,6 @@ async def test_send_after_close(websocket_url):
         with pytest.raises(websockets.exceptions.ConnectionClosed):
             await websocket.send("test")
 
-
 @pytest.mark.asyncio
 async def test_receive_closed_connection(websocket_url):
     """Test receiving a message on a closed WebSocket connection."""
@@ -135,7 +111,6 @@ async def test_receive_closed_connection(websocket_url):
 
         logger.info("Attempting to receive on a closed connection")
 
-        # Ensure the WebSocket is actually closed
         if websocket.state != websockets.protocol.State.CLOSED:
             pytest.skip("WebSocket service does not close connections properly")
 
@@ -145,4 +120,3 @@ async def test_receive_closed_connection(websocket_url):
             pytest.fail(f"Expected ConnectionClosed exception but received data: {response}")
         except (websockets.exceptions.ConnectionClosedError, websockets.exceptions.ConnectionClosedOK):
             logger.info("Correctly raised ConnectionClosed exception when receiving on a closed WebSocket")
-
