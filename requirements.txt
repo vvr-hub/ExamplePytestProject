@@ -8,3 +8,5 @@ uritemplate
 pytest-rerunfailures
 pytest-xdist
 requests-mock
+websockets
+pytest-asyncio

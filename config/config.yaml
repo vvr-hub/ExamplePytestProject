@@ -20,3 +20,6 @@ endpoints:
     admin_dashboard: "/admin/dashboard"
     mocked_user: "/mocked-user"
     admin: "/admin"
+
+# WebSocket Service URL
+websocket_url: "wss://echo.websocket.events"  # WebSocket Echo Service URL

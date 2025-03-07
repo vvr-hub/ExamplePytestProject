@@ -1,3 +1,5 @@
+# config/config_loader.py
+
 import yaml
 import os
 
@@ -60,3 +62,11 @@ class ConfigLoader:
             raise AttributeError("Auth token not found in config.")
         except Exception as e:
             raise Exception(f"An unexpected error occurred while getting auth token: {e}")
+
+    def get_websocket_url(self):
+        try:
+            return self.get('websocket_url')
+        except AttributeError:
+            raise AttributeError("WebSocket URL not found in config.")
+        except Exception as e:
+            raise Exception(f"An unexpected error occurred while getting WebSocket URL: {e}")
