@@ -22,4 +22,4 @@ endpoints:
     admin: "/admin"
 
 # WebSocket Service URL
-websocket_url: "wss://echo.websocket.events"  # WebSocket Echo Service URL
+websocket_url: "wss://ws.postman-echo.com/raw" # Postman Echo WebSocket

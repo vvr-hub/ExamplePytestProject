@@ -1,4 +1,4 @@
-# Pytest API Test Automation Sample Project
+# Pytest API & Websockets Test Automation Project (Sample)
 
 ## 📌 Overview
 
@@ -6,6 +6,7 @@
 - It also utilises WireMock for mocking APIs.
 - It supports functional testing, mock testing, fuzz testing, security testing, contract testing, negative testing, etc.
 - The project provides some sample tests. The aim here is not to provide comprehensive test coverage.
+- There are also some tests for **websockets**
 - IMPORTANT NOTE: This is a **work in progress** project with scope for improvement.
 
 ## ⚡ Features
@@ -211,8 +212,8 @@ TEST_ENV=demo pytest
 ```
 
 **NOTE:** The demo and staging environments do not exist. To demonstrate the project's capability to switch between
-different test environments, these imaginary environments are used. If we point to these environments, all tests
-fail, except for the mocked endpoints.
+different test environments, these imaginary environments are used. If we point to these environments, all API tests
+fail, except for the mocked endpoints. (The websockets tests still pass.)
 
 ### 6️⃣ View Test Reports for results and metrics using Allure
 
@@ -254,6 +255,9 @@ Note that the tests/ folder contains all test files.
 │   ├── test_negative.py        # Negative scenarios
 │   ├── test_positive.py        # Happy path tests
 │   ├── test_security.py        # Basic Security tests
+│   ├── 📂 websockes            
+│       ├── conftest.py         # Setup
+│       ├── test_websocket.py   # Basic Websockets tests      
 │
 ├── 📂 utils                # Reusable functions
 ├── 📂 mocks                # Stubs
@@ -286,7 +290,7 @@ Note that the tests/ folder contains all test files.
 
 Many thanks to the provider(s) of the test API https://reqres.in/api
 Thanks a lot, Ben Howdle. https://benhowdle.im/
-
+Many thanks also to the providers of Postman Echo WebSocket wss://ws.postman-echo.com/raw
 ---
 
 ### 🎯 Happy Testing! 🚀

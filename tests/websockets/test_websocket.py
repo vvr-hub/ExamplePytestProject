@@ -135,13 +135,14 @@ async def test_receive_closed_connection(websocket_url):
 
         logger.info("Attempting to receive on a closed connection")
 
-        # If the WebSocket is not properly closed, skip the test
+        # Ensure the WebSocket is actually closed
         if websocket.state != websockets.protocol.State.CLOSED:
             pytest.skip("WebSocket service does not close connections properly")
 
         try:
             response = await websocket.recv()
             logger.warning(f"Unexpectedly received data on a closed connection: {response}")
-            pytest.skip("WebSocket service does not raise ConnectionClosedError on closed connection")
-        except websockets.exceptions.ConnectionClosedError:
-            logger.info("Correctly raised ConnectionClosedError when receiving on a closed WebSocket")
+            pytest.fail(f"Expected ConnectionClosed exception but received data: {response}")
+        except (websockets.exceptions.ConnectionClosedError, websockets.exceptions.ConnectionClosedOK):
+            logger.info("Correctly raised ConnectionClosed exception when receiving on a closed WebSocket")
+
