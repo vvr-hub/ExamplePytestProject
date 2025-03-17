@@ -90,6 +90,7 @@ OWASP ZAP is used for automated API security testing.
 
 1. Download **OWASP ZAP** from the official website.
 2. Open the downloaded `.dmg` file and move `ZAP.app` to the `/Applications` folder.
+3. Eject the mounted volume.
 
 ### 2️⃣ Add ZAP to System PATH
 
@@ -104,7 +105,7 @@ Add the following line at the bottom:
 ```sh
 export PATH="$PATH:/Applications/ZAP.app/Contents/Java"
 ```
-
+Save (`CTRL + X', then `Y`, then `Enter`)
 Apply changes:
 
 ```sh
@@ -125,12 +126,12 @@ Expected output:
 
 ### 3️⃣ Start OWASP ZAP in Daemon Mode
 
-Run ZAP in the background:
+Run ZAP in the `background mode` (headless):
 
 ```sh
 zap.sh -daemon -port 8090
 ```
-
+This makes ZAP listen on `port 8090` for API security testing.
 Verify ZAP is running:
 
 ```sh
@@ -165,10 +166,20 @@ java    36987   vr  242u  IPv6 0xc983ecdaee0df363      0t0  TCP localhost:8090 (
 ```sh
 open /Applications/ZAP.app
 ```
-
+🔸 Disable API Key
 2. Go to `Tools → Options → API`.
-3. Uncheck `"Enable API Key"`.
+3. Check `"Disable API Key"`.
 4. Restart ZAP.
+
+### 5️⃣ Run Only the Security Test (Using OWASP ZAP)
+```sh
+pytest -m security
+```
+**or**
+```sh
+pytest -m security -s
+```
+_(The **-s** flag enables live logging for better debugging.)_
 
 ---
 
@@ -186,13 +197,13 @@ pytest
 pytest tests/test_mock.py
 ```
 
-### 2️⃣ Run a Specific function inside a test
+### 3️⃣ Run a Specific function inside a test
 
 ```sh
 pytest -k "test_specific_function"
 ```
 
-### 3️⃣ Rerunning Failing Tests
+### 4️⃣ Rerunning Failing Tests
 
 - Rerun all failing tests 2 times
 
@@ -224,7 +235,7 @@ pytest -k "security" --reruns 2
 pytest --reruns 2 --reruns-delay 1
 ```
 
-### 4️⃣ Running Tests in Parallel
+### 5️⃣ Running Tests in Parallel
 
 - Run tests using all available CPU cores:
 
@@ -262,7 +273,7 @@ pytest -n 4 --reruns 3 -v
 pytest -n 4 --reruns 3 -v --alluredir=allure-results
 ```
 
-### 5️⃣ Setting the desired environment to run tests
+### 6️⃣ Setting the desired environment to run tests
 
 - To run tests on the default environment (QA env).
 
@@ -306,7 +317,7 @@ TEST_ENV=demo pytest
 different test environments, these imaginary environments are used. If we point to these environments, all API tests
 fail, except for the mocked endpoints. (The websockets tests still pass.)
 
-### 6️⃣ View Test Reports for results and metrics using Allure
+### 7️⃣ View Test Reports for results and metrics using Allure
 
 - Run Your Pytest Tests with Allure:
 - Execute the Pytest tests with the --alluredir option. This option specifies the directory where Allure will store the
@@ -329,6 +340,12 @@ allure serve allure-results
 ```
 
 - Once the report finishes generating, the Allure Report will open in the browser.
+
+### 8️⃣ View ZAP Security Report
+After the OWASP ZAP aided security test completes (either alone or as part of the full suite), open the report:
+```sh
+open zap_report.html
+```
 
 ---
 
@@ -362,13 +379,16 @@ Note that the tests/ folder contains all test files.
 │   ├── demo.yaml               # Data for Demo Environment
 │   ├── data_loader.py          # Data Loader
 │
-├── conftest.py             # For global test fixtures (Ex: initialising ZAP for security scanning)
-├── pytest.ini              # Pytest configurations
-├── report.html             # Test Report showing results
-├── requirements.txt        # Dependencies
-├── README.md               # Project documentation
+├── conftest.py        # For global test fixtures (Ex: initialising ZAP for security scanning)
+├── pytest.ini         # Pytest configurations
+├── report.html        # Test Report showing results
+├── requirements.txt   # Dependencies
+├── README.md          # Project documentation
 
 ```
+---
+## 🔒 Integrating OWASP ZAP with the pytest project
+This approach enhances security by **automating vulnerability detection** during API testing, ensuring **early issue identification**. It seamlessly integrates with the existing tests using pytest fixtures, enabling **continuous security assessments** in a DevSecOps workflow. **ZAP's detailed reports** provide insights into security risks, aiding quick remediation. While it adds some setup complexity, the **long-term benefits** (proactive security, automation and improved test coverage) outweigh the effort, making the **API more resilient** against threats. 🚀
 
 ---
 
