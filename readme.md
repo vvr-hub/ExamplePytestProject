@@ -4,7 +4,9 @@
 
 - This project is a Pytest-based API test automation framework that utilises a test API https://reqres.in/api
 - It also utilises WireMock for mocking APIs.
-- It supports functional testing, mock testing, fuzz testing, security testing, contract testing, negative testing, etc.
+- Supports functional testing, mock testing, fuzz testing, security testing, contract testing, negative testing, etc.
+- **Security tests** using **OWASP ZAP** help detect vulnerabilities such as **CSP issues, HSTS missing headers, XSS
+  risks, and more**.
 - The project provides some sample tests. The aim here is not to provide comprehensive test coverage.
 - There are also some tests for **websockets**
 - IMPORTANT NOTE: This is a **work in progress** project with scope for improvement.
@@ -12,6 +14,7 @@
 ## ⚡ Features
 
 - **Pytest** for running API tests
+- **OWASP ZAP Security Scanning** for detecting API security vulnerabilities.
 - **WireMock** to mock API responses for endpoints which aren't yet developed/available for consumption
 - **Docker** for seamless WireMock setup
 - **Reporting** for test results and metrics using Allure
@@ -23,7 +26,6 @@
 - **Modular Structure** for easy test maintenance and scalability
 - **Reusable** utils and fixtures, avoiding duplication of code
 - **Reliable,** robust and independent tests, avoiding flakiness and hardcoding
-
 
 ---
 
@@ -37,12 +39,14 @@ For optimal coding experience with this project, I recommend using **PyCharm Com
 
 Ensure you have the following installed before setting up the project:
 
-1. **Python 3.9+**
+1. Git
+2. **Python 3.9+**
 2. **Pipenv** (for dependency management):
    ```sh
    pip install pipenv
    ```
 3. **Docker** (for WireMock container):
+4. **OWASP ZAP** (for the security testing of the API)
 
 To verify installation:
 
@@ -65,19 +69,106 @@ docker --version
    ```sh
    pipenv install
    pipenv shell
-   
    python3 -m venv venv
-   . venv/bin/activate
+   source . venv/bin/activate
    ```
-3. **Ensure Docker is Running**
-
-   If Docker is not running, start it manually.
-
-
-4. **Install Dependencies**
+3. **Install Dependencies**
    ```sh
    pip install -r requirements.txt
    ```
+4. **Ensure Docker is Running**
+
+   If Docker is not running, start it manually.
+
+---
+
+## 🛠 OWASP ZAP Integration Setup
+
+OWASP ZAP is used for automated API security testing.
+
+### 1️⃣ Install OWASP ZAP
+
+1. Download **OWASP ZAP** from the official website.
+2. Open the downloaded `.dmg` file and move `ZAP.app` to the `/Applications` folder.
+
+### 2️⃣ Add ZAP to System PATH
+
+To enable running `zap.sh` from anywhere:
+
+```sh
+nano ~/.zshrc
+```
+
+Add the following line at the bottom:
+
+```sh
+export PATH="$PATH:/Applications/ZAP.app/Contents/Java"
+```
+
+Apply changes:
+
+```sh
+source ~/.zshrc
+```
+
+Verify installation:
+
+```sh
+which zap.sh
+```
+
+Expected output:
+
+```swift
+/Applications/ZAP.app/Contents/Java/zap.sh
+```
+
+### 3️⃣ Start OWASP ZAP in Daemon Mode
+
+Run ZAP in the background:
+
+```sh
+zap.sh -daemon -port 8090
+```
+
+Verify ZAP is running:
+
+```sh
+curl http://localhost:8090/JSON/core/view/version/
+```
+
+Expected response:
+
+```json
+{
+  "version": "2.16.0"
+}
+```
+
+Check if ZAP is listening on port `8090`:
+
+```sh
+lsof -i :8090
+```
+
+Expected output:
+
+```pgsql
+COMMAND   PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+java    36987   vr  242u  IPv6 0xc983ecdaee0df363      0t0  TCP localhost:8090 (LISTEN)
+```
+
+### 4️⃣ Disable API Key Protection (GUI)
+
+1. Open OWASP ZAP GUI:
+
+```sh
+open /Applications/ZAP.app
+```
+
+2. Go to `Tools → Options → API`.
+3. Uncheck `"Enable API Key"`.
+4. Restart ZAP.
 
 ---
 
@@ -218,7 +309,8 @@ fail, except for the mocked endpoints. (The websockets tests still pass.)
 ### 6️⃣ View Test Reports for results and metrics using Allure
 
 - Run Your Pytest Tests with Allure:
-- Execute the Pytest tests with the --alluredir option. This option specifies the directory where Allure will store the test results.
+- Execute the Pytest tests with the --alluredir option. This option specifies the directory where Allure will store the
+  test results.
 
 ```sh
 pytest --alluredir=allure-results
@@ -247,19 +339,20 @@ Note that the tests/ folder contains all test files.
 
 📦 repo
 ├── 📂 tests
-│   ├── conftest.py             # Setup, config and fixture management for the tests
-│   ├── test_authentication.py  # Authentication tests
-│   ├── test_contract.py        # Contract tests
-│   ├── test_fuzz.py            # Basic Fuzz tests
-│   ├── test_mock.py            # Mock tests
-│   ├── test_negative.py        # Negative scenarios
-│   ├── test_positive.py        # Happy path tests
-│   ├── test_security.py        # Basic Security tests
+│   ├── conftest.py               # Setup, config & fixture management for the tests
+│   ├── test_authentication.py    # Authentication tests
+│   ├── test_contract.py          # Contract tests
+│   ├── test_fuzz.py              # Basic Fuzz tests
+│   ├── test_mock.py              # Mock tests
+│   ├── test_negative.py          # Negative scenarios
+│   ├── test_positive.py          # Happy path tests
+│   ├── test_security.py          # Basic Security tests
+│   ├── test_security_scan_api.py # OWASP ZAP aided Security Test
 │   ├── 📂 websockes            
 │       ├── conftest.py         # Setup
 │       ├── test_websocket.py   # Basic Websockets tests      
 │
-├── 📂 utils                # Reusable functions
+├── 📂 utils                # Reusable functions (including OWASP ZAP helper)
 ├── 📂 mocks                # Stubs
 ├── 📂 config               # Base URLs, endpoints and config loader
 ├── 📂 schemas              # JSON schemas for API contract testing
@@ -269,7 +362,7 @@ Note that the tests/ folder contains all test files.
 │   ├── demo.yaml               # Data for Demo Environment
 │   ├── data_loader.py          # Data Loader
 │
-├── conftest.py             # Useful in the future for global test fixtures, etc
+├── conftest.py             # For global test fixtures (Ex: initialising ZAP for security scanning)
 ├── pytest.ini              # Pytest configurations
 ├── report.html             # Test Report showing results
 ├── requirements.txt        # Dependencies
@@ -287,7 +380,6 @@ Note that the tests/ folder contains all test files.
 ---
 
 ## 🙏 Thanks And Acknowledgement
-
 
 Many thanks to the provider(s) of the test API https://reqres.in/api
 Thanks a lot, Ben Howdle. https://benhowdle.im/

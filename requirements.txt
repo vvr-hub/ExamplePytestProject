@@ -10,3 +10,4 @@ pytest-xdist
 requests-mock
 websockets
 pytest-asyncio
+python-owasp-zap-v2.4

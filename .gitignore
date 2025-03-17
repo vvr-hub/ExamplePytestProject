@@ -10,3 +10,4 @@ allure-results/
 *.sqlite
 *.sqlite3
 *.DS_Store
+zap_report.html

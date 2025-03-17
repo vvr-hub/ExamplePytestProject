@@ -23,3 +23,6 @@ endpoints:
 
 # WebSocket Service URL
 websocket_url: "wss://ws.postman-echo.com/raw" # Postman Echo WebSocket
+
+#  ZAP Proxy Setting
+zap_url: "http://localhost:8090"
