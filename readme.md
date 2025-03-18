@@ -347,7 +347,7 @@ After the OWASP ZAP aided security test completes (either alone or as part of th
 ```sh
 open zap_report.html
 ```
-The SamplePytestProject/docs/ folder has got screenshots of a sample OWASP ZAP Report.
+The `SamplePytestProject/docs/` folder has got screenshots of a sample OWASP ZAP Report.
 
 ---
 
