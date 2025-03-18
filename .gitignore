@@ -11,3 +11,4 @@ allure-results/
 *.sqlite3
 *.DS_Store
 zap_report.html
+zap_api_report.html

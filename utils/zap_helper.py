@@ -1,6 +1,5 @@
 import logging
 import time
-import requests
 from zapv2 import ZAPv2
 from config.config_loader import ConfigLoader
 

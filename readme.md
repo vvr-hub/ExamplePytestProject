@@ -344,7 +344,7 @@ allure serve allure-results
 ### 8️⃣ View ZAP Security Report
 After the OWASP ZAP aided security test completes (either alone or as part of the full suite), open the report:
 ```sh
-open zap_report.html
+open zap_api_report.html
 ```
 The `SamplePytestProject/docs/` folder has got screenshots of a sample OWASP ZAP Report.
 
