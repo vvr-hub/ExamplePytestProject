@@ -35,6 +35,6 @@ class DataLoader:
         except KeyError as e:
             raise e  # Re-raise the KeyError to maintain its specific type
         except AttributeError:
-            raise AttributeError("Data has not been loaded. Check the DataLoader initialization.")
+            raise AttributeError("Data has not been loaded. Check the DataLoader initialisation.")
         except Exception as e:
             raise Exception(f"An unexpected error occurred while getting data: {e}")
