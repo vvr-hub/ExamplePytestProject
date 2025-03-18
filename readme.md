@@ -172,6 +172,7 @@ open /Applications/ZAP.app
 4. Restart ZAP.
 
 ### 5️⃣ Run Only the Security Test (Using OWASP ZAP)
+Make sure ZAP is running (in daemon mode).
 ```sh
 pytest -m security
 ```
@@ -346,6 +347,7 @@ After the OWASP ZAP aided security test completes (either alone or as part of th
 ```sh
 open zap_report.html
 ```
+The SamplePytestProject/docs/ folder has got screenshots of a sample OWASP ZAP Report.
 
 ---
 
@@ -384,6 +386,7 @@ Note that the tests/ folder contains all test files.
 ├── report.html        # Test Report showing results
 ├── requirements.txt   # Dependencies
 ├── README.md          # Project documentation
+├── 📂 docs/           # Screenshots of some parts of OWASP ZAP Security Test Report.
 
 ```
 ---
