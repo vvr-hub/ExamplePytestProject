@@ -1,20 +1,17 @@
 import pytest
-import os
+import logging
 from utils.zap_helper import ZAPHelper
-from config.config_loader import ConfigLoader
-
-# Load configuration
-config = ConfigLoader()
-
-# Get values from config.yaml
-zap_url = config.get("zap_url") or "http://localhost:8080"
-base_url = config.get_base_url()
-auth_token = config.get_auth_token()
 
 
 @pytest.fixture(scope="session")
 def zap():
-    """Fixture to initialise OWASP ZAP for security scanning."""
+    """Fixture to initialize OWASP ZAP for API security scanning."""
     zap_instance = ZAPHelper()
+
+    # ✅ Start API Scan Automatically When Fixture is Used
+    zap_instance.start_api_scan()
+
     yield zap_instance
+
+    # ✅ Generate Report After Tests Complete
     zap_instance.generate_report()
