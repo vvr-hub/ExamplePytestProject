@@ -49,7 +49,7 @@ def test_get_user_contract(api_client, config_loader, data_loader):
     """Ensure response follows expected schema."""
     user_ids = data_loader.get_data("contract", "user_ids")
     for user_id in user_ids:
-        endpoint = config_loader.get("endpoints")["base_api"]["users_by_id"].format(user_id=user_id)
+        endpoint = config_loader.get_api_endpoints("users_by_id").format(user_id=user_id)
         response = api_client.get(endpoint)
         assert response.status_code == 200
         try:
@@ -60,7 +60,7 @@ def test_get_user_contract(api_client, config_loader, data_loader):
 
 def test_list_users_contract(api_client, config_loader):
     """Ensure response follows expected schema for list of users."""
-    endpoint = config_loader.get("endpoints")["base_api"]["users"]
+    endpoint = config_loader.get_api_endpoints("users")
     response = api_client.get(endpoint)
     assert response.status_code == 200
     try:
@@ -72,7 +72,7 @@ def test_list_users_contract(api_client, config_loader):
 def test_single_resource_contract(api_client, config_loader, data_loader):
     """Ensure response follows expected schema for a single resource."""
     resource_id = data_loader.get_data("contract", "resource_id")
-    endpoint = config_loader.get("endpoints")["base_api"]["unknown_by_id"].format(resource_id=resource_id)
+    endpoint = config_loader.get_api_endpoints("unknown_by_id").format(resource_id=resource_id)
     response = api_client.get(endpoint)
     assert response.status_code == 200
     try:
@@ -83,7 +83,7 @@ def test_single_resource_contract(api_client, config_loader, data_loader):
 
 def test_list_resources_contract(api_client, config_loader):
     """Ensure response follows expected schema for list of resources."""
-    endpoint = config_loader.get("endpoints")["base_api"]["unknown"]
+    endpoint = config_loader.get_api_endpoints("unknown")
     response = api_client.get(endpoint)
     assert response.status_code == 200
     try:
@@ -94,7 +94,7 @@ def test_list_resources_contract(api_client, config_loader):
 
 def test_get_user_contract_missing_field(api_client, config_loader):
     """Test response with a missing field."""
-    endpoint = config_loader.get("endpoints")["base_api"]["users_by_id"].format(user_id=2)
+    endpoint = config_loader.get_api_endpoints("users_by_id").format(user_id=2)
     response = api_client.get(endpoint)
     response_json = copy.deepcopy(response.json())  # Safe copy before modification
     if "avatar" in response_json["data"]:

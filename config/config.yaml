@@ -1,28 +1,79 @@
 # Base URLs for the API
 base_urls:
-  qa: "https://reqres.in/api"   # QA environment base URL
-  staging: "http://staging.reqres.in/api"   # Staging environment base URL
-  demo: "http://demo.reqres.in/api"   # Demo environment base URL
+  qa: "https://reqres.in/api"
+  staging: "http://staging.reqres.in/api"
+  demo: "http://demo.reqres.in/api"
 
-wiremock_url: "http://localhost:8080"  # Mock base URL
+wiremock_url: "http://localhost:8080"
 
-# API Endpoints
-endpoints:
-  base_api:
-    login: "/login"
-    users: "/users"
-    users_page: "/users?page={page}"
-    users_by_id: "/users/{user_id}"
-    fetch_data: "/fetch-data"
-    unknown: "/unknown"
-    unknown_by_id: "/unknown/{resource_id}"
-  wiremock:
-    admin_dashboard: "/admin/dashboard"
-    mocked_user: "/mocked-user"
-    admin: "/admin"
+# API Endpoints (Updated with "name" field)
+api_endpoints:
+  - name: users
+    method: "GET"
+    url: "/users"
 
-# WebSocket Service URL
-websocket_url: "wss://ws.postman-echo.com/raw" # Postman Echo WebSocket
+  - name: users_by_id
+    method: "GET"
+    url: "/users/{user_id}"
 
-#  ZAP Proxy Setting
+  - name: users_page
+    method: "GET"
+    url: "/users?page={page}"
+
+  - name: create_user
+    method: "POST"
+    url: "/users"
+    data:
+      name: "test"
+      job: "leader"
+
+  - name: update_user
+    method: "PUT"
+    url: "/users/{user_id}"
+    data:
+      name: "updated"
+
+  - name: patch_user
+    method: "PATCH"
+    url: "/users/{user_id}"
+    data:
+      name: "patched"
+
+  - name: delete_user
+    method: "DELETE"
+    url: "/users/{user_id}"
+
+  - name: register
+    method: "POST"
+    url: "/register"
+    data:
+      email: "eve.holt@reqres.in"
+      password: "pistol"
+
+  - name: login
+    method: "POST"
+    url: "/login"
+    data:
+      email: "eve.holt@reqres.in"
+      password: "cityslicka"
+
+  - name: delayed_users
+    method: "GET"
+    url: "/users?delay=3"
+
+  - name: unknown_by_id
+    method: GET
+    url: "/unknown/{resource_id}"
+
+  - name: unknown
+    method: GET
+    url: "/unknown"
+
+# Dummy Endpoints Key to Prevent Errors
+endpoints: { }
+
+# WebSocket URL
+websocket_url: "wss://ws.postman-echo.com/raw"
+
+# ZAP Proxy Setting
 zap_url: "http://localhost:8090"

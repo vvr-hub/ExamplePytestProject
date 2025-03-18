@@ -3,7 +3,6 @@ import random
 import string
 import re
 
-
 random.seed(42)  # Set a fixed seed
 
 
@@ -62,7 +61,7 @@ def random_int_string(length=5):
 ])
 def test_fuzz_login(api_client, email, password, config_loader):
     """Test login with various fuzzed inputs and verify error details."""
-    endpoint = config_loader.get("endpoints")["base_api"]["login"]
+    endpoint = config_loader.get_api_endpoints("login")
     response = api_client.post(endpoint, data={"email": email, "password": password})
     assert response.status_code in [400, 401]
     response_json = response.json()

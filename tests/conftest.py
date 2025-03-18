@@ -4,6 +4,7 @@ import subprocess
 import requests
 import pytest
 import time
+import logging
 import os
 import json
 from utils.api_client import APIClient
@@ -45,6 +46,14 @@ def wiremock_url(config_loader):
 @pytest.fixture(scope="session")
 def api_client(base_url, config_loader):
     try:
+        if not base_url:
+            raise ValueError("⚠️ ERROR: Base URL is None, cannot create API Client!")
+
+        logging.info(f"🌍 Using Base URL: {base_url}")
+
+        # 🔍 Debug: Log config contents
+        logging.info(f"🛠️ Config Contents: {config_loader.config}")
+
         return APIClient(base_url, config_loader)
     except Exception as e:
         pytest.exit(f"Failed to create API client: {e}")

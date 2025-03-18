@@ -1,5 +1,4 @@
 import pytest
-import logging
 from utils.zap_helper import ZAPHelper
 
 

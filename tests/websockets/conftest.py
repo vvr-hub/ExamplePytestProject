@@ -1,5 +1,3 @@
-# tests/websockets/conftest.py
-
 import pytest_asyncio
 import websockets
 from config.config_loader import ConfigLoader
