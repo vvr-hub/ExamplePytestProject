@@ -104,7 +104,7 @@ Add the following line at the bottom:
 ```sh
 export PATH="$PATH:/Applications/ZAP.app/Contents/Java"
 ```
-Save (`CTRL + X', then `Y`, then `Enter`)
+Save (`CTRL + X', then `Y`, then `Enter`).  
 Apply changes:
 
 ```sh
@@ -165,10 +165,10 @@ java    36987   vr  242u  IPv6 0xc983ecdaee0df363      0t0  TCP localhost:8090 (
 ```sh
 open /Applications/ZAP.app
 ```
-🔸 Disable API Key
-2. Go to `Tools → Options → API`.
-3. Check `"Disable API Key"`.
-4. Restart ZAP.
+🔸 Disable API Key  
+2. Go to `Tools → Options → API`.  
+3. Check `"Disable API Key"`.  
+4. Restart ZAP.  
 
 ### 5️⃣ Run Only the Security Test (Using OWASP ZAP)
 Make sure ZAP is running (in daemon mode).
@@ -295,7 +295,7 @@ TEST_ENV=qa pytest -n auto
 TEST_ENV=qa pytest -n 4 --reruns 3 -v --alluredir=allure-results
 ```
 
-or simply as below (without setting the TEST_ENV)
+or simply as below (without setting the `TEST_ENV`)
 
 ```sh
 pytest -n 4 --reruns 3 -v --alluredir=allure-results
