@@ -1,5 +1,6 @@
 import logging
 import time
+import requests
 from zapv2 import ZAPv2
 from config.config_loader import ConfigLoader
 
@@ -8,7 +9,7 @@ class ZAPHelper:
     def __init__(self):
         config = ConfigLoader()
         self.zap_url = config.get("zap_url") or "http://localhost:8090"
-        self.api_target = config.get_base_url()  # Get API base URL dynamically
+        self.api_target = config.get_base_url()  # ✅ Get API base URL dynamically
 
         # ✅ Use ZAP's Python API
         self.zap = ZAPv2(proxies={'http': self.zap_url, 'https': self.zap_url})
@@ -16,24 +17,45 @@ class ZAPHelper:
         logging.basicConfig(level=logging.INFO)
 
     def import_api_endpoints(self):
-        """Manually add all API endpoints for scanning"""
-        logging.info(f"📥 Manually adding API endpoints from {self.api_target}")
+        """Manually add all API endpoints with correct HTTP methods"""
+        logging.info(f"📥 Adding API endpoints with methods from {self.api_target}")
 
         api_endpoints = [
-            "/users", "/users/2", "/users/23",  # Users (list, single, not found)
-            "/unknown", "/unknown/2", "/unknown/23",  # Resources (list, single, not found)
-            "/users", "/users/2", "/users/2", "/users/2",  # Create, Update, Update, Delete
-            "/register", "/register",  # Register (success & failure)
-            "/login", "/login",  # Login (success & failure)
-            "/users?delay=3"  # Delayed response
+            {"method": "GET", "url": "/users"},
+            {"method": "GET", "url": "/users/2"},
+            {"method": "GET", "url": "/users/23"},
+            {"method": "GET", "url": "/unknown"},
+            {"method": "GET", "url": "/unknown/2"},
+            {"method": "GET", "url": "/unknown/23"},
+            {"method": "POST", "url": "/users"},
+            {"method": "PUT", "url": "/users/2"},
+            {"method": "PATCH", "url": "/users/2"},
+            {"method": "DELETE", "url": "/users/2"},
+            {"method": "POST", "url": "/register"},
+            {"method": "POST", "url": "/login"},
+            {"method": "GET", "url": "/users?delay=3"}
         ]
 
-        # ✅ Add each endpoint manually to ZAP Spider
+        # ✅ Send each request to ZAP
         for endpoint in api_endpoints:
-            full_url = f"{self.api_target}{endpoint}"
-            logging.info(f"🔗 Adding {full_url} to ZAP Spider")
-            self.zap.urlopen(full_url)
-            time.sleep(1)  # Allow ZAP to process each request
+            full_url = f"{self.api_target}{endpoint['url']}"
+            logging.info(f"🔗 {endpoint['method']} {full_url}")
+
+            try:
+                # ✅ Send request with correct HTTP method
+                if endpoint["method"] == "GET":
+                    self.zap.urlopen(full_url)
+                elif endpoint["method"] == "POST":
+                    self.zap.urlopen(full_url, data={"name": "test", "job": "leader"})
+                elif endpoint["method"] in ["PUT", "PATCH"]:
+                    self.zap.urlopen(full_url, data={"name": "updated"})
+                elif endpoint["method"] == "DELETE":
+                    self.zap.urlopen(full_url)
+
+                time.sleep(1)  # Allow ZAP to process each request
+
+            except Exception as e:
+                logging.error(f"⚠️ Error adding {full_url}: {e}")
 
         logging.info("✅ API Endpoints added successfully!")
 
@@ -49,7 +71,7 @@ class ZAPHelper:
             logging.error("⚠️ ERROR: ZAP is not running or unreachable!")
             raise RuntimeError("OWASP ZAP is not running. Start ZAP first.")
 
-        # ✅ Manually Import API Endpoints
+        # ✅ Manually Import API Endpoints with correct methods
         self.import_api_endpoints()
 
         # ✅ Start an Active API Scan

@@ -5,8 +5,7 @@
 - This project is a Pytest-based API test automation framework that utilises a test API https://reqres.in/api
 - It also utilises WireMock for mocking APIs.
 - Supports functional testing, mock testing, fuzz testing, security testing, contract testing, negative testing, etc.
-- **Security tests** using **OWASP ZAP** help detect vulnerabilities such as **CSP issues, HSTS missing headers, XSS
-  risks, and more**.
+- **Security tests** using **OWASP ZAP** help detect **API vulnerabilities** such as **CORS misconfigurations, authentication flaws, injection attacks, sensitive data exposure, and more.**
 - The project provides some sample tests. The aim here is not to provide comprehensive test coverage.
 - There are also some tests for **websockets**
 - IMPORTANT NOTE: This is a **work in progress** project with scope for improvement.
