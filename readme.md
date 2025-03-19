@@ -28,6 +28,13 @@
 
 ---
 
+## Disclaimer: 
+
+The **security testing tools and scripts** provided in this project are intended solely for educational purposes and to facilitate security testing on APIs you own or have explicit permission to test. Do not use these tools to conduct security tests on the **https://reqres.in/ API or any other third-party APIs** without proper authorisation. **Unauthorised security testing** may violate legal agreements and could lead to legal action. By using these tools, you agree to take **full responsibility** for ensuring that your use complies with all applicable **laws and regulations**.
+
+
+---
+
 ### 🔧Recommended IDE
 
 For optimal coding experience with this project, I recommend using **PyCharm Community Edition**.
