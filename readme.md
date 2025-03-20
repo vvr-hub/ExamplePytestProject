@@ -5,7 +5,8 @@
 - This project is a Pytest-based API test automation framework that utilises a test API https://reqres.in/api
 - It also utilises WireMock for mocking APIs.
 - Supports functional testing, mock testing, fuzz testing, security testing, contract testing, negative testing, etc.
-- **Security tests** using **OWASP ZAP** help detect **API vulnerabilities** such as **CORS misconfigurations, authentication flaws, injection attacks, sensitive data exposure, and more.**
+- **Security tests** using **OWASP ZAP** help detect **API vulnerabilities** such as **CORS misconfigurations,
+  authentication flaws, injection attacks, sensitive data exposure, and more.**
 - The project provides some sample tests. The aim here is not to provide comprehensive test coverage.
 - There are also some tests for **websockets**
 - IMPORTANT NOTE: This is a **work in progress** project with scope for improvement.
@@ -28,9 +29,13 @@
 
 ---
 
-## Disclaimer: 
+## Disclaimer:
 
-The **security testing tools and scripts** provided in this project are intended solely for educational purposes and to facilitate security testing on APIs you own or have explicit permission to test. Do not use these tools to conduct security tests on the **https://reqres.in/ API or any other third-party APIs** without proper authorisation. **Unauthorised security testing** may violate legal agreements and could lead to legal action. By using these tools, you agree to take **full responsibility** for ensuring that your use complies with all applicable **laws and regulations**.
+The **security testing tools and scripts** provided in this project are intended solely for educational purposes and to
+facilitate security testing on APIs you own or have explicit permission to test. Do not use these tools to conduct
+security tests on the **https://reqres.in/ API or any other third-party APIs** without proper authorisation. *
+*Unauthorised security testing** may violate legal agreements and could lead to legal action. By using these tools, you
+agree to take **full responsibility** for ensuring that your use complies with all applicable **laws and regulations**.
 
 
 ---
@@ -45,18 +50,38 @@ For optimal coding experience with this project, I recommend using **PyCharm Com
 
 Ensure you have the following installed before setting up the project:
 
-1. Git
+1. **Git**
+
+- Download: [Git Downloads](https://git-scm.com/downloads)
+- Installation Guide: [Installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+
 2. **Python 3.9+**
-2. **Pipenv** (for dependency management):
+
+- Download: [Python Downloads](https://www.python.org/downloads/)
+- Installation Guide: [Installing Python](https://docs.python.org/3/using/index.html)
+
+3. **Pipenv**
+
+- Installation Guide: [Pipenv Installation](https://pipenv.pypa.io/en/latest/install/)
+- Run the following command after installing Python:
    ```sh
    pip install pipenv
    ```
-3. **Docker** (for WireMock container):
-4. **OWASP ZAP** (for the security testing of the API)
+
+4. **Docker** (for WireMock container):
+
+- [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+
+5. **OWASP ZAP** (for the security testing of the API)
+
+- OWASP ZAP can be downloaded from the official website:
+  [OWASP ZAP Download](https://www.zaproxy.org/download/)
 
 To verify installation:
 
 ```sh
+git --version
 python --version
 pipenv --version
 docker --version
@@ -84,7 +109,101 @@ docker --version
    ```
 4. **Ensure Docker is Running**
 
-   If Docker is not running, start it manually.
+   If Docker is not running, start it manually. Refer to the below section on Docker if required.
+
+---
+
+## 🐳 Docker Desktop and WireMock Setup
+
+After you download Docker, follow the below instructions.
+
+---
+
+1. **Install Docker Desktop**
+
+To run WireMock in a Docker container, you need to have Docker Desktop installed on your machine.
+
+- **macOS**:
+    - Download Docker Desktop for macOS from [here](https://www.docker.com/products/docker-desktop).
+    - Follow the instructions to install Docker Desktop.
+
+- **Windows**:
+    - Download Docker Desktop for Windows from [here](https://www.docker.com/products/docker-desktop).
+    - Follow the installation instructions for Windows.
+
+- **Linux**:
+    - Follow the installation guide for Docker on [Linux](https://docs.docker.com/engine/install/) for your specific
+      distribution.
+
+Once the installation is complete, Docker Desktop should be available from your applications menu or start menu.
+
+2. **Verify Docker Installation**
+
+After installing Docker Desktop, verify that Docker is properly installed and running.
+
+Open a terminal or command prompt and run the following command:
+
+```sh
+docker --version
+```
+
+This should return the installed Docker version. To confirm Docker is running, you can use:
+
+```sh
+docker info
+```
+
+If Docker is running correctly, this will display information about your Docker installation.
+
+3. **Install and Run WireMock in a Docker Container**
+   To run WireMock in a Docker container, you can use the official WireMock image from Docker Hub.
+
+Run the following command to pull the WireMock Docker image:
+
+```sh
+docker pull wiremock/wiremock
+```
+
+Next, start the WireMock container by running:
+
+```sh
+docker run -d --name wiremock -p 8080:8080 wiremock/wiremock
+```
+
+This will:
+
+- Download the WireMock Docker image (if not already pulled).
+- Run the container in detached mode (`-d`).
+- Map port `8080` on your machine to port `8080` in the container, so WireMock can be accessed from
+  `http://localhost:8080`
+
+4. **Managing the WireMock Container**
+
+To **list all running Docker containers**, use:
+
+```sh
+docker ps
+```
+
+This will show you the running WireMock container along with its status and other details.
+
+If you need to **start the WireMock container** after stopping it, run:
+
+```sh
+docker start wiremock
+```
+
+This will start the WireMock container again.
+
+To **stop the WireMock** container, run:
+
+```sh
+docker stop wiremock
+
+```
+
+This will stop the container, but it can be started again using the **docker start** command as shown above.
+
 
 ---
 
@@ -111,6 +230,7 @@ Add the following line at the bottom:
 ```sh
 export PATH="$PATH:/Applications/ZAP.app/Contents/Java"
 ```
+
 Save (`CTRL + X', then `Y`, then `Enter`).  
 Apply changes:
 
@@ -137,6 +257,7 @@ Run ZAP in the `background mode` (headless):
 ```sh
 zap.sh -daemon -port 8090
 ```
+
 This makes ZAP listen on `port 8090` for API security testing.
 Verify ZAP is running:
 
@@ -172,20 +293,27 @@ java    36987   vr  242u  IPv6 0xc983ecdaee0df363      0t0  TCP localhost:8090 (
 ```sh
 open /Applications/ZAP.app
 ```
-🔸 Disable API Key  
-2. Go to `Tools → Options → API`.  
-3. Check `"Disable API Key"`.  
-4. Restart ZAP.  
+
+🔸 Disable API Key:
+
+1. Go to `Tools → Options → API`.
+2. Tick the checkbox for `"Disable API Key"`.
+3. Restart ZAP.
 
 ### 5️⃣ Run Only the Security Test (Using OWASP ZAP)
+
 Make sure ZAP is running (in daemon mode).
+
 ```sh
 pytest -m security
 ```
+
 **or**
+
 ```sh
 pytest -m security -s
 ```
+
 _(The **-s** flag enables live logging for better debugging.)_
 
 ---
@@ -349,10 +477,13 @@ allure serve allure-results
 - Once the report finishes generating, the Allure Report will open in the browser.
 
 ### 8️⃣ View ZAP Security Report
+
 After the OWASP ZAP aided security test completes (either alone or as part of the full suite), open the report:
+
 ```sh
 open zap_api_report.html
 ```
+
 The `SamplePytestProject/docs/` folder has got screenshots of a sample OWASP ZAP Report.
 
 ---
@@ -395,16 +526,16 @@ Note that the tests/ folder contains all test files.
 ├── 📂 docs/           # Screenshots of some parts of OWASP ZAP Security Test Report.
 
 ```
+
 ---
+
 ## 🔒 Integrating OWASP ZAP with the pytest project
-This approach enhances security by **automating vulnerability detection** during API testing, ensuring **early issue identification**. It seamlessly integrates with the existing tests using pytest fixtures, enabling **continuous security assessments** in a DevSecOps workflow. **ZAP's detailed reports** provide insights into security risks, aiding quick remediation. While it adds some setup complexity, the **long-term benefits** (proactive security, automation and improved test coverage) outweigh the effort, making the **API more resilient** against threats. 🚀
 
----
-
-## 📝 Author
-
-- **Venki Rao**
-- **GitHub:** [vvr_hub]([https://github.com/vvr-hub]
+This approach enhances security by **automating vulnerability detection** during API testing, ensuring **early issue
+identification**. It seamlessly integrates with the existing tests using pytest fixtures, enabling **continuous security
+assessments** in a DevSecOps workflow. **ZAP's detailed reports** provide insights into security risks, aiding quick
+remediation. While it adds some setup complexity, the **long-term benefits** (proactive security, automation and
+improved test coverage) outweigh the effort, making the **API more resilient** against threats. 🚀
 
 ---
 
@@ -417,4 +548,3 @@ Many thanks also to the providers of Postman Echo WebSocket wss://ws.postman-ech
 ---
 
 ### 🎯 Happy Testing! 🚀
-
