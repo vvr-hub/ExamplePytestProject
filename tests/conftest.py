@@ -44,7 +44,7 @@ def wiremock_url(config_loader):
 
 
 @pytest.fixture(scope="session")
-def api_client(base_url, config_loader):
+def api_client(base_url, config_loader): # Pytest automatically resolves these parameters by looking for other fixtures with these names. (fixture dependency)
     try:
         if not base_url:
             raise ValueError("⚠️ ERROR: Base URL is None, cannot create API Client!")
@@ -123,7 +123,7 @@ def _setup_wiremock(wiremock_url):
 
 
 def pytest_sessionstart(session):
-    """Called before the start of the test session."""
+    """This Pytest Hook is called before the start of the test session."""
     try:
         config_loader_instance = ConfigLoader()
         wiremock_url_instance = config_loader_instance.get_wiremock_url()
