@@ -36,4 +36,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: 🧪 Run Pytest Tests
-        run: pytest -n 3 --reruns 2
+        run: pytest -n 4 --reruns 2
