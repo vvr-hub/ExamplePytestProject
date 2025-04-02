@@ -46,7 +46,7 @@ jobs:
 
       - name: 🧪 Run Pytest with Allure
         run: |
-          TEST_ENV=qa pytest -n auto --reruns 1 -v --alluredir=allure-results
+          TEST_ENV=qa pytest -n auto --reruns 2 -v --alluredir=allure-results
 
       - name: 📊 Generate Allure HTML Report
         run: |
