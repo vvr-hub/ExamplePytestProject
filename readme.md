@@ -25,7 +25,7 @@
 - **Test data separation** from tests. Data is loaded dynamically from relevant file as per the target test environment
 - **Parallelisation** for running tests simultaneously
 - **Retries** for failing tests
-- ✅ GitHub Actions CI Pipeline with Allure HTML Reporting
+- ✅ GitHub Actions **CI Pipeline** to run the tests
 - **Modular Structure** for easy test maintenance and scalability
 - **Reusable** utils and fixtures, avoiding duplication of code
 - **Reliable,** robust and independent tests, avoiding flakiness and hardcoding
@@ -516,6 +516,16 @@ This project includes a GitHub Actions workflow to automatically run all tests u
 4. Extract it locally
 5. Open index.html in your browser
 
+#### 💡 NOTE:
+If you double-click `index.html`, the report may show only "Loading...".  
+To properly view the Allure report, serve it with a local web server.  
+1. Switch to the folder (`allure-report/`) where `index.html` is downloaded on your machine.  
+2. Run the below.  
+```sh
+python3 -m http.server 8000
+```
+3. Then open: http://localhost:8000
+
 ### 📄 Workflow File
 
 .github/workflows/tests-in-ci.yml
@@ -530,36 +540,36 @@ Note that the tests/ folder contains all test files.
 
 📦 repo
 ├── 📂 tests
-│ ├── conftest.py # Setup, config & fixture management for the tests
-│ ├── test_authentication.py # Authentication tests
-│ ├── test_contract.py # Contract tests
-│ ├── test_fuzz.py # Basic Fuzz tests
-│ ├── test_mock.py # Mock tests
-│ ├── test_negative.py # Negative scenarios
-│ ├── test_positive.py # Happy path tests
-│ ├── test_security.py # Basic Security tests
+│ ├── conftest.py               # Setup, config & fixture management for the tests
+│ ├── test_authentication.py    # Authentication tests
+│ ├── test_contract.py          # Contract tests
+│ ├── test_fuzz.py              # Basic Fuzz tests
+│ ├── test_mock.py              # Mock tests
+│ ├── test_negative.py          # Negative scenarios
+│ ├── test_positive.py          # Happy path tests
+│ ├── test_security.py          # Basic Security tests
 │ ├── test_security_scan_api.py # OWASP ZAP aided Security Test
 │ ├── 📂 websockes            
-│ ├── conftest.py # Setup
-│ ├── test_websocket.py # Basic Websockets tests      
+│ ├── conftest.py               # Setup
+│ ├── test_websocket.py         # Basic Websockets tests      
 │
-├── 📂 utils # Reusable functions (including OWASP ZAP helper)
-├── 📂 mocks # Stubs
-├── 📂 config # Base URLs, endpoints and config loader
-├── 📂 schemas # JSON schemas for API contract testing
-├── 📂 data # Test data files for each test environment and data loader
-│ ├── qa.yaml # Data for Default Environment (QA Env)
-│ ├── staging.yaml # Data for Staging Environment
-│ ├── demo.yaml # Data for Demo Environment
-│ ├── data_loader.py # Data Loader
+├── 📂 utils               # Reusable functions (including OWASP ZAP helper)
+├── 📂 mocks               # Stubs
+├── 📂 config              # Base URLs, endpoints and config loader
+├── 📂 schemas             # JSON schemas for API contract testing
+├── 📂 data                # Test data files for each test environment and data loader
+│ ├── qa.yaml              # Data for Default Environment (QA Env)
+│ ├── staging.yaml         # Data for Staging Environment
+│ ├── demo.yaml            # Data for Demo Environment
+│ ├── data_loader.py       # Data Loader
 │
-├── conftest.py # For global test fixtures (Ex: initialising ZAP for security scanning)
-├── pytest.ini # Pytest configurations
-├── report.html # Test Report showing results
-├── requirements.txt # Dependencies
-├── README.md # Project documentation
-├── 📂 docs/ # Screenshots of some parts of OWASP ZAP Security Test Report.
-├── 📂 .github/workflows/ # Contains GitHub Actions workflow file for running tests & generating Allure reports
+├── conftest.py            # For global test fixtures (Ex: initialising ZAP for security scanning)
+├── pytest.ini             # Pytest configurations
+├── report.html            # Test Report showing results
+├── requirements.txt       # Dependencies
+├── README.md              # Project documentation
+├── 📂 docs/               # Screenshots of some parts of OWASP ZAP Security Test Report.
+├── 📂 .github/workflows/  # Contains GitHub Actions workflow file for running tests & generating Allure reports
 automatically.
 
 ```
