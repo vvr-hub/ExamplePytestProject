@@ -1,0 +1,32 @@
+stages:
+  - test
+
+services:
+  - name: wiremock/wiremock:latest
+    alias: wiremock
+
+variables:
+  PYTHON_VERSION: "3.11"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_NO_CACHE_DIR: "off"
+
+before_script:
+  - apt-get update && apt-get install -y curl unzip
+  - curl -sLo allure-2.27.0.tgz https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+  - tar -zxvf allure-2.27.0.tgz
+  - mv allure-2.27.0 /opt/allure
+  - ln -s /opt/allure/bin/allure /usr/local/bin/allure
+  - python3 -m pip install --upgrade pip
+  - pip install -r requirements.txt
+
+pytest:
+  stage: test
+  image: python:3.11
+  script:
+    - TEST_ENV=qa pytest -n auto --reruns 2 -v --alluredir=allure-results
+    - allure generate allure-results -o allure-report --clean
+  artifacts:
+    when: always
+    paths:
+      - allure-report/
+    expire_in: 7 days
