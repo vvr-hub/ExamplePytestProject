@@ -305,19 +305,11 @@ open /Applications/ZAP.app
 
 ### 5️⃣ Run Only the Security Test (Using OWASP ZAP)
 
-Make sure ZAP is running (in daemon mode).
+Make sure ZAP is running (in daemon mode). Then run the following command
 
 ```sh
-pytest -m security
+ pytest tests/test_security_scan_api.py
 ```
-
-**or**
-
-```sh
-pytest -m security -s
-```
-
-_(The **-s** flag enables live logging for better debugging.)_
 
 ---
 
@@ -352,19 +344,19 @@ pytest --reruns 2
 - Rerun a specific test file 2 times
 
 ```sh
-pytest tests/test_security.py --reruns 2
+pytest tests/test_positive.py --reruns 2
 ```
 
 - Rerun a specific test function 2 times
 
 ```sh
-pytest tests/test_security.py::test_sql_injection --reruns 2
+pytest tests/test_positive.py::test_get_users_pages --reruns 2
 ```
 
 - Rerun tests matching a keyword 2 times
 
 ```sh
-pytest -k "security" --reruns 2
+pytest -k "fuzz" --reruns 2
 ```
 
 - Add a 1-second delay between retries

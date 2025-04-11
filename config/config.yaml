@@ -1,12 +1,12 @@
 # Base URLs for the API
 base_urls:
-  qa: "https://reqres.in/api"
-  staging: "http://staging.reqres.in/api"
-  demo: "http://demo.reqres.in/api"
+  qa: "https://reqres.in/api"      # QA environment base URL
+  staging: "http://staging.reqres.in/api" # Staging base URL
+  demo: "http://demo.reqres.in/api" # Demo environment
 
 wiremock_url: "http://localhost:8080"
 
-# API Endpoints (Updated with "name" field)
+# API Endpoints
 api_endpoints:
   - name: users
     method: "GET"
