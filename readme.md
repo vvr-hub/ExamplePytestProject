@@ -511,12 +511,12 @@ This project includes a GitHub Actions workflow to automatically run all tests u
 #### 💡 NOTE:
 If you double-click `index.html`, the report may show only "Loading...".  
 To properly view the Allure report, serve it with a local web server.  
-1. Switch to the folder (`allure-report/`) where `index.html` is downloaded on your machine.  
-2. Run the below.  
+1. Open your terminal and navigate to the (`allure-report/`) where `index.html` is downloaded on your machine.  
+2. Run the below. It starts a simple HTTP server using Python  
 ```sh
 python3 -m http.server 8000
 ```
-3. Then open: http://localhost:8000
+3. Then open your browser and go to: http://localhost:8000
 
 ### 📄 Workflow File
 
