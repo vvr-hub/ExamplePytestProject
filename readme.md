@@ -524,6 +524,30 @@ python3 -m http.server 8000
 
 ---
 
+## 🛡️ Running OWASP ZAP API Security Scan in GitHub Actions
+
+This project includes a manual GitHub Actions workflow for security testing using [OWASP ZAP](https://www.zaproxy.org/).
+
+### 🔧 How to Trigger the Scan
+
+1. Go to the **Actions** tab of this repository.
+2. Select the workflow named **"Run OWASP ZAP API Security Test"**.
+3. Click the **"Run workflow"** button at the top right.
+4. Wait for the workflow to complete. It will:
+   - Install OWASP ZAP
+   - Start ZAP in daemon mode (headless)
+   - Run the Pytest-based security scan
+   - Upload the resulting report `zap_api_report.html` as a downloadable artifact
+   - Print a quick scan summary in the logs (showing the number of high/medium/low risk alerts)
+
+### 📄 View the Report
+
+Once the workflow finishes:
+- Scroll to the bottom of the workflow run.
+- Click **Artifacts** → **zap-api-security-report** to download and open `zap_api_report.html` locally in your browser.
+
+---
+
 ## 📁 Project Structure
 
 ```

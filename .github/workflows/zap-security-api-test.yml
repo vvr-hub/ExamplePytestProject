@@ -41,6 +41,19 @@ jobs:
         run: |
           pytest tests/test_security_scan_api.py --maxfail=1 --disable-warnings
 
+      - name: 📝 Print ZAP Report Summary to GitHub Actions log
+        if: always()
+        run: |
+          echo "---- ZAP API Scan Summary ----"
+          echo ""
+          if [[ -f zap_api_report.html ]]; then
+            grep -A 5 -i "alertitem" zap_api_report.html | grep "<riskdesc>" | sort | uniq -c | sed 's/<[^>]*>//g'
+          else
+            echo "Report not found!"
+          fi
+          echo ""
+          echo "---- End of Summary ----"
+
       - name: 📤 Upload ZAP API Security Report
         if: always()
         uses: actions/upload-artifact@v4
