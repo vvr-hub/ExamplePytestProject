@@ -1,0 +1,49 @@
+name: Run OWASP ZAP API Security Test
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+jobs:
+  zap-api-security-scan:
+    name: OWASP ZAP API Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      ZAP_API_TEST: true
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🔧 Install OWASP ZAP CLI
+        run: |
+          sudo snap install zaproxy --classic
+          zaproxy -version
+
+      - name: ⚙️ Start OWASP ZAP in Daemon Mode (API key disabled)
+        run: |
+          nohup zaproxy -daemon -host 127.0.0.1 -port 8090 -config api.disablekey=true &
+          sleep 30
+          echo "ZAP is running on port 8090"
+
+      - name: 🧪 Run Pytest OWASP ZAP API Security Scan
+        run: |
+          pytest tests/test_security_scan_api.py --maxfail=1 --disable-warnings
+
+      - name: 📤 Upload ZAP API Security Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-api-security-report
+          path: zap_api_report.html
