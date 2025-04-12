@@ -538,7 +538,6 @@ This project includes a manual GitHub Actions workflow for security testing usin
    - Start ZAP in daemon mode (headless)
    - Run the Pytest-based security scan
    - Upload the resulting report `zap_api_report.html` as a downloadable artifact
-   - Print a quick scan summary in the logs (showing the number of high/medium/low risk alerts)
 
 ### 📄 View the Report
 
